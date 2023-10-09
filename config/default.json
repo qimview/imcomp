@@ -1,0 +1,41 @@
+{
+	"config_name" : "default",
+	"input": "none",
+	"outputs": ["out"],
+	"diff" : [],
+	"json_filter": "",
+	"column_list_images": {
+		"Unique Name": {
+			"size_hint": 15,
+			"show": 1,
+			"default_pos": 0
+		},
+		"Score": {
+			"default_pos": 1,
+			"size_hint": 5,
+			"show": 1
+		},
+		"Comments": {
+			"size_hint": 5,
+			"show": 1,
+			"default_pos": 2
+		}
+	},
+	"column_list_jsons": {
+		"Unique Name": {
+			"default_pos": 0,
+			"size_hint": 15,
+			"show": 1
+		},
+		"Score": {
+			"default_pos": 1,
+			"size_hint": 5,
+			"show": 1
+		},
+		"Comments": {
+			"default_pos": 2,
+			"size_hint": 5,
+			"show": 1
+		}	
+	}
+}
