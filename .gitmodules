@@ -1,0 +1,3 @@
+[submodule "qimview"]
+	path = qimview
+	url = https://github.com/karlkrissian/qimview.git
