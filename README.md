@@ -21,6 +21,6 @@ The code is compiled and bound to Python using pybind11 and the module cppimport
 However, the first time you use it, it may not be able to compile the code automatically (I don't know why).
 In this case, you can run manually:
 
-  python -m cppimport build .\CppBind\
+  python -m cppimport build ./qimview/CppBind
 
 from the qimview folder. Even of the command ends up with the error 'No module named wrap_numpy', it has probably build the library correctly.
