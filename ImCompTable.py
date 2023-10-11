@@ -4,7 +4,7 @@ from qimview.utils.utils import get_time
 import fill_table_data
 import numpy as np
 from collections import OrderedDict
-from utils.process_image_differences import ProcessImageDifferences
+from qimtools.process_image_differences import ProcessImageDifferences
 import os
 
 # Deal with compatibility issues of different Qt versions
