@@ -1,17 +1,12 @@
 
 import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 # import ingest
 import gzip
 import json
-import platform
 
 from qimview.utils.qt_imports import QtWidgets, QtCore
-import numpy as np
 import os
-# import time
 
 
 def writeJson(data, filename, compress = False, compressLevel = 9, indent=None):
