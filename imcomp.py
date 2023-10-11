@@ -7,8 +7,8 @@ def import_parents(level=1):
     file = Path(__file__).resolve()
     parent, top = file.parent, file.parents[level]
     print(f" parent {parent} top {top}")
-    
-    sys.path.append(str(top))
+    if str(top) not in sys.path:
+	    sys.path.append(str(top))
     try:
         sys.path.remove(str(parent))
     except ValueError: # already removed
@@ -21,19 +21,44 @@ def import_parents(level=1):
 # if __name__ == '__main__' and (__package__ is None or __package__ == ''):
 #     import_parents()
 
+import os
+import sys
+print(f"imcomp.py 1: sys.path {sys.path}")
 import argparse
 import logging
 import sys
 import ImCompWindow
+print(f"imcomp.py 2: sys.path {sys.path}")
 from  ImCompWindow import ImCompWindow
 from  qimview.utils.qt_imports import QtWidgets, QtCore
+print(f"imcomp.py 3: sys.path {sys.path}")
 import json
 import version
-import os
-import sys
 import fill_table_data
+import configparser
 
 from qimview.image_viewers.MultiView import ViewerType
+from qimview.utils.image_reader import image_reader
+
+def reader_add_plugins():
+	config = configparser.ConfigParser()
+	config.read_file(open('default.cfg'))
+	config.read([os.path.expanduser('~/.qimcomp.cfg')])
+
+	# Add new image format support
+	formats = config['READERS']['Formats'].split(',')
+	for fmt in  formats:
+		try:
+			format_cfg = config[f'READER.{fmt.upper()}']
+			folder, module, ext = format_cfg['Folder'], format_cfg['Module'], format_cfg['Extensions'].split(',')
+			print(f' {fmt} {folder, ext}')
+			sys.path.append(folder)
+			import importlib
+			fmt_reader = importlib.import_module(f"{module}")
+			image_reader.set_plugin(ext, fmt_reader.read)
+		except Exception as e:
+			print(f" ----- Failed to add support for {fmt}: {e}")
+
 
 
 # *****************************************************************************
@@ -42,6 +67,8 @@ from qimview.image_viewers.MultiView import ViewerType
 if __name__ == '__main__':
 	# Init log
 	logging.info('Begin')
+ 
+	reader_add_plugins()
 
 	# Parse parse_args
 	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
