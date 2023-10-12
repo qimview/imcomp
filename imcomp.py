@@ -68,7 +68,11 @@ if __name__ == '__main__':
 	# Init log
 	logging.info('Begin')
  
-	reader_add_plugins()
+	try:
+		reader_add_plugins()
+	except Exception as e:
+		print(f"No reader plugin, {e}")
+		pass
 
 	# Parse parse_args
 	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
