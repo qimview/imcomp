@@ -1,94 +1,137 @@
-<html lang="en">
-<p><span style="text-decoration: underline;">Image sets:</span></p>
-<p>First, you need to define the image sets you would like to compare.</p>
-<p>Each set is defined by a pair (directory,suffix), where the directory is the input directory to look for .json or image files (usually jpeg or png files), and the suffix is the suffix at the end of the file used to define the set.</p>
-<p>You have several use cases:</p>
-<ul>
-<li>A json configuration file is available for your outputs, this file is usually in the directory config of the application but could also be anywhere. The configuration file will define the input and output of your algorithm/process, and each a json file is expected for each result. The json file of each results contains information that can later be used in the table sheet display, and it also contains the list of output images related to this result in a field named 'resulting_files'.</li>
-</ul>
-<p>&nbsp;</p>
-<p>You can use a json configuration file to parameter the interface. In this case, the program will look for .json files in the input directories.</p>
-<p>&nbsp;</p>
-<p><span style="text-decoration: underline;">Key events:</span></p>
-<p>Key_N is the one of the keys 0 to 9</p>
-<table style="float: left;" border="0">
-<tbody>
-<tr style="height: 17px;">
-<td style="height: 17px;"><strong><em>ALT+Key_N</em></strong></td>
-<td style="height: 17px;">switch temporarily to resulting image number N while the key is pressed</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><strong><em>ALT+CTL+Key_N</em></strong></td>
-<td style="height: 17px;">switch to image number N as the reference image</td>
-</tr>
-<tr style="height: 35px;">
-<td style="height: 35px;"><em><strong>CTL+Key_N</strong></em></td>
-<td style="height: 35px;">computes and displays difference between reference image and resulting image number N</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><strong><em>ALT++</em></strong></td>
-<td style="height: 17px;">move to next row (seems broken)</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><strong><em>ALT+-</em></strong></td>
-<td style="height: 17px;">move to previous row&nbsp;(seems broken)</td>
-</tr>
-<tr style="height: 45px;">
-<td style="height: 45px;"><em><strong>ALT+A</strong></em>:</td>
-<td style="height: 45px;">
-<pre>select upper left quarter crop</pre>
-</td>
-</tr>
-<tr style="height: 45px;">
-<td style="height: 45px;"><em><strong>ALT+B</strong></em></td>
-<td style="height: 45px;">
-<pre>select upper right quarter crop</pre>
-</td>
-</tr>
-<tr style="height: 25.3333px;">
-<td style="height: 25.3333px;"><em><strong>ALT+C</strong></em></td>
-<td style="height: 25.3333px;">
-<pre>select lower left quarter crop</pre>
-</td>
-</tr>
-<tr style="height: 30px;">
-<td style="height: 30px;"><em><strong>ALT+D</strong></em></td>
-<td style="height: 30px;">select lower right quarter crop</td>
-</tr>
-<tr style="height: 45px;">
-<td style="height: 45px;"><em><strong>ALT+V</strong></em></td>
-<td style="height: 45px;">
-<pre>Vertical crop top: Horizontal reduction by 2</pre>
-</td>
-</tr>
-<tr style="height: 45px;">
-<td style="height: 45px;"><em><strong>ALT+H</strong></em></td>
-<td style="height: 45px;">
-<pre>Horizontal crop: Vertical reduction by 2</pre>
-</td>
-</tr>
-<tr style="height: 45px;">
-<td style="height: 45px;"><em><strong>ALT+F</strong></em></td>
-<td style="height: 45px;">
-<pre> select full image geometry</pre>
-</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><em><strong>CTL+C</strong></em></td>
-<td style="height: 17px;">&nbsp;copy text from the table</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><em><strong>F1</strong></em></td>
-<td style="height: 17px;">&nbsp;launch beyond compare on results</td>
-</tr>
-<tr style="height: 17px;">
-<td style="height: 17px;"><em><strong>F3</strong></em></td>
-<td style="height: 17px;">&nbsp;launch&nbsp; faststone on results</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;<em><span style="text-decoration: underline;">Note:</span></em> All the features are not necessarily available with the pyqtgraph option at the moment.</p>
-<p>&nbsp;</p>
+<html lang="en" style="position:absolute;left:1px;top:0px;">
+    <p>
+        <span style="text-decoration:underline;">Image sets:</span>
+    </p>
+    <p>First, you need to define the image sets you would like to compare.</p>
+    <p>Each set is defined by a pair (directory,suffix), where the directory is the input directory to look for image files (usually jpeg or png files), and the suffix is the suffix at the end of the file used to define the set.</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>
+        <span style="text-decoration:underline;">Key events:</span>
+    </p>
+    <p>Key_N is the one of the keys 0 to 9</p>
+    <table border="0" style="float:left;">
+        <tbody>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>ALT+Key_N</em></strong>
+                </td>
+                <td style="height:17px;">switch temporarily to resulting image number N while the key is pressed</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>ALT+CTL+Key_N</em></strong>
+                </td>
+                <td style="height:17px;">switch to image number N as the reference image</td>
+            </tr>
+            <tr style="height:35px;">
+                <td style="height:35px;">
+                    <em><strong>CTL+Key_N</strong></em>
+                </td>
+                <td style="height:35px;">computes and displays difference between reference image and resulting image number N</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>h</em></strong>
+                </td>
+                <td style="height:17px;">toggle (display/hide) histogram display</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>c</em></strong>
+                </td>
+                <td style="height:17px;">toggle (display/hide) cursor display</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>ALT++</em></strong>
+                </td>
+                <td style="height:17px;">move to next row (seems broken)</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <strong><em>ALT+-</em></strong>
+                </td>
+                <td style="height:17px;">move to previous row&nbsp;(seems broken)</td>
+            </tr>
+            <tr style="height:45px;">
+                <td style="height:45px;">
+                    <em><strong>ALT+A</strong></em>:
+                </td>
+                <td style="height:45px;">
+                    <pre>select upper left quarter crop</pre>
+                </td>
+            </tr>
+            <tr style="height:45px;">
+                <td style="height:45px;">
+                    <em><strong>ALT+B</strong></em>
+                </td>
+                <td style="height:45px;">
+                    <pre>select upper right quarter crop</pre>
+                </td>
+            </tr>
+            <tr style="height:25.3333px;">
+                <td style="height:25.3333px;">
+                    <em><strong>ALT+C</strong></em>
+                </td>
+                <td style="height:25.3333px;">
+                    <pre>select lower left quarter crop</pre>
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td style="height:30px;">
+                    <em><strong>ALT+D</strong></em>
+                </td>
+                <td style="height:30px;">select lower right quarter crop</td>
+            </tr>
+            <tr style="height:45px;">
+                <td style="height:45px;">
+                    <em><strong>ALT+V</strong></em>
+                </td>
+                <td style="height:45px;">
+                    <pre>Vertical crop top: Horizontal reduction by 2</pre>
+                </td>
+            </tr>
+            <tr style="height:45px;">
+                <td style="height:45px;">
+                    <em><strong>ALT+H</strong></em>
+                </td>
+                <td style="height:45px;">
+                    <pre>Horizontal crop: Vertical reduction by 2</pre>
+                </td>
+            </tr>
+            <tr style="height:45px;">
+                <td style="height:45px;">
+                    <em><strong>ALT+F</strong></em>
+                </td>
+                <td style="height:45px;">
+                    <pre>select full image geometry</pre>
+                </td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <em><strong>CTL+C</strong></em>
+                </td>
+                <td style="height:17px;">&nbsp;copy text from the table</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <em><strong>F1</strong></em>
+                </td>
+                <td style="height:17px;">&nbsp;launch beyond compare on results</td>
+            </tr>
+            <tr style="height:17px;">
+                <td style="height:17px;">
+                    <em><strong>F3</strong></em>
+                </td>
+                <td style="height:17px;">&nbsp;launch&nbsp; faststone on results</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>
+        &nbsp;<em><span style="text-decoration:underline;">Note:</span></em>All the features are not necessarily available with the pyqtgraph option at the moment.
+    </p>
+    <p>&nbsp;</p>
 </html>
