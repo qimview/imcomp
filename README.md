@@ -23,4 +23,4 @@ In this case, you can run manually:
 
   python -m cppimport build ./qimview/CppBind
 
-from the qimview folder. Even of the command ends up with the error 'No module named wrap_numpy', it has probably build the library correctly.
+from the qimview folder. Even of the command ends up with the error 'No module named wrap_numpy', it has probably built the library correctly.
