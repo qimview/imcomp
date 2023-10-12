@@ -1,5 +1,5 @@
 {
-	"config_name" : "default",
+	"config_name" : "Images",
 	"input": "none",
 	"outputs": ["out"],
 	"diff" : [],
