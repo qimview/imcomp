@@ -1,44 +1,14 @@
-import sys, importlib
-from pathlib import Path
-
-def import_parents(level=1):
-    print("import_parents")
-    global __package__
-    file = Path(__file__).resolve()
-    parent, top = file.parent, file.parents[level]
-    print(f" parent {parent} top {top}")
-    if str(top) not in sys.path:
-	    sys.path.append(str(top))
-    try:
-        sys.path.remove(str(parent))
-    except ValueError: # already removed
-        pass
-
-    __package__ = '.'.join(parent.parts[len(top.parts):])
-    print(f"__package__ {__package__}")
-    importlib.import_module(__package__) # won't be needed after that
-
-# if __name__ == '__main__' and (__package__ is None or __package__ == ''):
-#     import_parents()
-
-import os
-import sys
-print(f"imcomp.py 1: sys.path {sys.path}")
-import argparse
-import logging
-import sys
-import ImCompWindow
-print(f"imcomp.py 2: sys.path {sys.path}")
-from  ImCompWindow import ImCompWindow
-from  qimview.utils.qt_imports import QtWidgets, QtCore
-print(f"imcomp.py 3: sys.path {sys.path}")
+import os, sys
+import argparse, logging
 import json
-import version
-import fill_table_data
+from imcomp import version, fill_table_data
 import configparser
 
+from qimview.utils.qt_imports        import QtWidgets, QtCore
 from qimview.image_viewers.MultiView import ViewerType
-from qimview.utils.image_reader import image_reader
+from qimview.utils.image_reader      import image_reader
+
+from imcomp.ImCompWindow import ImCompWindow
 
 def reader_add_plugins():
 	config = configparser.ConfigParser()
@@ -64,7 +34,7 @@ def reader_add_plugins():
 # *****************************************************************************
 # Main
 # *****************************************************************************
-if __name__ == '__main__':
+def main():
 	# Init log
 	logging.info('Begin')
  
@@ -270,3 +240,6 @@ if __name__ == '__main__':
 		exit(res)
 	else:
 		sys.exit(app.exec())
+
+if __name__ == '__main__':
+    main()

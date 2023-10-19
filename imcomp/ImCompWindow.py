@@ -1,3 +1,5 @@
+
+import sys
 from qimview.utils.qt_imports        import QtWidgets, QtCore, QtGui
 from qimview.utils.utils             import get_time
 from qimview.utils.image_reader      import image_reader
@@ -5,9 +7,7 @@ from qimview.utils.ViewerImage       import *
 from qimview.utils.menu_selection    import MenuSelection
 from qimview.utils.image_cache       import FileCache
 from qimview.image_viewers.MultiView import MultiView, ViewerType
-import ImCompTable
-from ImCompTable import ImCompTable
-import sys
+from imcomp.ImCompTable import ImCompTable
 
 # Only enable vlc player for windows by default
 use_vlc_player = sys.platform == "win32"
@@ -26,19 +26,20 @@ else:
         print(f"Failed to import video_player {e}")
         has_video_player = False
 
-import fill_table_data
+from imcomp import fill_table_data
 import os
 from shutil import copyfile
 import copyreg
 import multiprocessing
 
 import matplotlib
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from collections import OrderedDict
+#import sys
+# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# from collections import OrderedDict
 import types
-from matplotlib import cm
+# from matplotlib import cm
 import psutil
+
 
 # Imports from utils folder
 

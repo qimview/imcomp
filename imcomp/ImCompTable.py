@@ -1,10 +1,10 @@
 
 from qimview.utils.qt_imports import QtWidgets, QtCore, QtGui
 from qimview.utils.utils import get_time
-import fill_table_data
+from imcomp import fill_table_data
 import numpy as np
 from collections import OrderedDict
-from qimtools.process_image_differences import ProcessImageDifferences
+from imcomp.qimtools.process_image_differences import ProcessImageDifferences
 import os
 
 # Deal with compatibility issues of different Qt versions

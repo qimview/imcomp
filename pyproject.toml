@@ -31,3 +31,5 @@ dependencies = [
 "Homepage" = "https://github.com/karlkrissian/imcomp"
 "Bug Tracker" = "https://github.com/karlkrissian/imcomp/issues"
 
+[project.scripts]
+imcomp = "imcomp.imcomp:main"
