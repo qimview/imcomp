@@ -1,23 +1,7 @@
-CppBind>=1.0.3
-cppimport>=20.8.4.2
-# Roundation only for mac ?
-Foundation>=0.1.0a0.dev1
-matplotlib>=3.3.2
-numpy>=1.19.4
-opencv_python>=4.4.0.46
-psutil>=5.8.0
-pygame>=2.0.0
-PyOpenGL>=3.1.7
-pyqtgraph>=0.11.0
-PySide6>=6.5.2
-PySide6_Addons>=6.5.2
-PySide6_Essentials>=6.5.2
-# python_vlc optional
-python_vlc>=3.0.11115
-PyTurboJPEG>=1.4.1
-rawpy>=0.16.0
-scipy>=1.6.0
-simplejpeg>=1.4.0
-tqdm>=4.66.1
-xlwt>=1.3.0
-# check if pyOpenGL-accelerate if needed
+Foundation==0.1.0a0.dev1
+matplotlib==3.3.2
+numpy==1.24.4
+opencv_python==4.4.0.46
+psutil==5.8.0
+qimview==1.0.0
+xlwt==1.3.0
