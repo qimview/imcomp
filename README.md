@@ -14,6 +14,7 @@ set PATH=C:\Users\USERNAME\AppData\Local\Programs\Python\Python39\;C:\Users\kkri
 
 ## Installation issue:
 
-PyYAML version 5.4 required by CppBind can create installation errors, I was enable to get around this issue by running:
-pip install PyYAML==5.3.1
-pip install -e . --no-deps PyYAML # -e option is for development, it points to the github clone
+PyYAML version 5.4 required by CppBind can create installation errors, I was able to get around this issue by running:
+
+pip3 install wheel -v
+pip3 install "cython<3.0.0" pyyaml==5.4 --no-build-isolation -v
