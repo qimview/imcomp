@@ -19,7 +19,6 @@ classifiers = [
 
 dependencies = [
     "Foundation==0.1.0a0.dev1",
-    "matplotlib==3.3.2",
     "numpy>1.23.0",
     "opencv_python>4.2",
     "psutil==5.8.0",

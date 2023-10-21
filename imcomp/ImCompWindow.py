@@ -32,7 +32,7 @@ from shutil import copyfile
 import copyreg
 import multiprocessing
 
-import matplotlib
+# import matplotlib
 #import sys
 # sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 # from collections import OrderedDict
@@ -45,7 +45,7 @@ import psutil
 
 
 
-matplotlib.rcParams.update({'font.size': 22})
+# matplotlib.rcParams.update({'font.size': 22})
 
 # Deal with compatibility issues of different Qt versions
 if hasattr(QtCore.Qt, 'Vertical'):
