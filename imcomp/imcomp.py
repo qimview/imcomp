@@ -46,10 +46,9 @@ def main():
 
 	# Parse parse_args
 	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	parser.add_argument( 'directory_list', type=str, nargs='*', default='.', help='List of directories containing the processed scenarios')
 	parser.add_argument('-r','--report', help='Existing report file')
 	parser.add_argument('-rd', '--root_dir',  type=str, default='', help='root directory for directory list')
-	parser.add_argument('-d', '--directory_list',  type=str, nargs='+', help='List of directories containing the '
-																  'processed scenarios')
 	parser.add_argument('-f',  '--filters', default='',
 	                    help='Filter images containing the specified string: in case of jpg list filter on resulting '
 							 'image name, in case of json, filter on input image name'+
