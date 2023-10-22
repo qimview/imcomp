@@ -8,3 +8,5 @@ _*
 *\ -\ Copy.*
 *.prof*
 *.egg-info
+# Package builds
+dist/
