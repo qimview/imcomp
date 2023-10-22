@@ -2,33 +2,11 @@ import os, sys
 import argparse, logging
 import json
 from imcomp import version, fill_table_data
-import configparser
 
 from qimview.utils.qt_imports        import QtWidgets, QtCore
 from qimview.image_viewers.MultiView import ViewerType
-from qimview.utils.image_reader      import image_reader
 
 from imcomp.ImCompWindow import ImCompWindow
-
-def reader_add_plugins():
-	config = configparser.ConfigParser()
-	config.read_file(open('default.cfg'))
-	config.read([os.path.expanduser('~/.qimcomp.cfg')])
-
-	# Add new image format support
-	formats = config['READERS']['Formats'].split(',')
-	for fmt in  formats:
-		try:
-			format_cfg = config[f'READER.{fmt.upper()}']
-			folder, module, ext = format_cfg['Folder'], format_cfg['Module'], format_cfg['Extensions'].split(',')
-			print(f' {fmt} {folder, ext}')
-			sys.path.append(folder)
-			import importlib
-			fmt_reader = importlib.import_module(f"{module}")
-			image_reader.set_plugin(ext, fmt_reader.read)
-		except Exception as e:
-			print(f" ----- Failed to add support for {fmt}: {e}")
-
 
 
 # *****************************************************************************
