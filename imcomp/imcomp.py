@@ -61,9 +61,9 @@ def main():
 	parser.add_argument('-c', '--config', type=str, default='default',
 						help='Configuration file, if no configuration file is specified, it will use the '
 							 'default one and it will not parse json files but directly images extensions.')
-	parser.add_argument('--viewer', type=str, choices={'gl','qt','shader','pyqtgraph'}, default='qt',
+	parser.add_argument('--viewer', type=str, choices={'gl','qt','shader'}, default='qt',
 						help="Viewer mode, qt: standard qt display, gl: use opengl,  shader: enable opengl with "
-							 "shaders, pyqtgraph: experimental, use pyqtgraph module if installed")
+							 "shaders")
 	parser.add_argument('--nb_viewers', type=int, default=1, help='Number of simultaneous viewers (only with opengl)')
 	parser.add_argument('--profile', action='store_true', help="Profile code with cProfile")
 	parser.add_argument('--ext', nargs='+', default=['.jpg', '.png', '.dxr'], help="List of image extensions")
@@ -202,8 +202,7 @@ def main():
 	mode = {
 		'qt':        ViewerType.QT_VIEWER,
 		'gl':        ViewerType.OPENGL_VIEWER,
-		'shader':    ViewerType.OPENGL_SHADERS_VIEWER,
-		'pyqtgraph': ViewerType.PYQTGRAPH_VIEWER
+		'shader':    ViewerType.OPENGL_SHADERS_VIEWER
 	}[_params['viewer']]
 
 	table_win = ImCompWindow( viewer_mode=mode,
