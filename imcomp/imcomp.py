@@ -34,17 +34,14 @@ def main():
 	parser.add_argument('-s', '--suffix_list', default='',
 	                    help='Comma separated list of suffixes, suffix is applying to corresponding directory or last '
 							 'one if there is no corresponding directory')
-	parser.add_argument('-v', '--is_video', action='store_true',
-						help='Adapt parameters to display stitcher outputs for videos (ring size, ...)')
 	parser.add_argument('-c', '--config', type=str, default='default',
 						help='Configuration file, if no configuration file is specified, it will use the '
-							 'default one and it will not parse json files but directly images extensions.')
+							 'default one')
 	parser.add_argument('--viewer', type=str, choices={'gl','qt','shader'}, default='qt',
 						help="Viewer mode, qt: standard qt display, gl: use opengl,  shader: enable opengl with "
 							 "shaders")
-	parser.add_argument('--nb_viewers', type=int, default=1, help='Number of simultaneous viewers (only with opengl)')
 	parser.add_argument('--profile', action='store_true', help="Profile code with cProfile")
-	parser.add_argument('--ext', nargs='+', default=['.jpg', '.png', '.dxr'], help="List of image extensions")
+	parser.add_argument('--ext', nargs='+', default=['.jpg', '.png'], help="List of image extensions")
 	parser.add_argument('--sets', nargs='+', default=[],
 	                    help="List of of image sets, each image set is defined as name:dir:suffix, this parameter"
 	                         "replacess directory_list and suffix_list options")
@@ -183,8 +180,7 @@ def main():
 		'shader':    ViewerType.OPENGL_SHADERS_VIEWER
 	}[_params['viewer']]
 
-	table_win = ImCompWindow( viewer_mode=mode,
-											nb_glviewer_used=_params['nb_viewers'])
+	table_win = ImCompWindow( viewer_mode=mode)
 
 	if _params['timing']:
 		table_win.set_verbosity(table_win.verbosity_TIMING)

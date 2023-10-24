@@ -107,8 +107,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
     Main class that controls the interface
     """
     def __init__(self, parent=None,
-                    viewer_mode = ViewerType.QT_VIEWER,
-                     nb_glviewer_used=1):
+                    viewer_mode = ViewerType.QT_VIEWER):
         super(ImCompWindow, self).__init__(parent)
 
         self.main_widget = QtWidgets.QWidget(self)
