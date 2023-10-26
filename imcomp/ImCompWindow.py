@@ -1,13 +1,14 @@
 
 import sys
 from qimview.utils.qt_imports        import QtWidgets, QtCore, QtGui
-from qimview.utils.utils             import get_time
-from qimview.utils.image_reader      import image_reader
+# from qimview.utils.utils             import get_time
 from qimview.utils.ViewerImage       import *
 from qimview.utils.menu_selection    import MenuSelection
 from qimview.utils.image_cache       import FileCache
 from qimview.image_viewers.MultiView import MultiView, ViewerType
 from imcomp.ImCompTable import ImCompTable
+
+from qimview.image_readers           import image_reader
 
 # Only enable vlc player for windows by default
 use_vlc_player = sys.platform == "win32"

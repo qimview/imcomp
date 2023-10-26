@@ -1,6 +1,8 @@
 from qimview.utils.qt_imports import QtWidgets, QtCore, QtGui
 from qimview.utils.utils import get_time
-from qimview.utils.image_reader import image_reader
+
+from qimview.image_readers import image_reader
+
 import cv2
 import numpy as np
 
