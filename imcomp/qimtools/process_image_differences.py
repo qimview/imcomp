@@ -1,7 +1,7 @@
 from qimview.utils.qt_imports import QtWidgets, QtCore, QtGui
 from qimview.utils.utils import get_time
 
-from qimview.image_readers import image_reader
+from qimview.image_readers import gb_image_reader
 
 import cv2
 import numpy as np
@@ -71,7 +71,7 @@ class ProcessImageDifferences(QtCore.QThread):
             print(f"self.tw image1 {self.tw.image1} image2 {self.tw.image2}")
             print(f"{row_id} {self.tw.useful_data[row_id].keys()}")
             for im_type in ['out_set0','out_set1']:
-                cv2_im = image_reader.read(self.tw.useful_data[row_id][im_type])
+                cv2_im = gb_image_reader.read(self.tw.useful_data[row_id][im_type])
                 width = cv2_im.data.shape[1]
                 height = cv2_im.data.shape[0]
                 new_width = int(1000)

@@ -8,7 +8,7 @@ from qimview.utils.image_cache       import FileCache
 from qimview.image_viewers.MultiView import MultiView, ViewerType
 from imcomp.ImCompTable import ImCompTable
 
-from qimview.image_readers           import image_reader
+from qimview.image_readers           import gb_image_reader
 
 # Only enable vlc player for windows by default
 use_vlc_player = sys.platform == "win32"
@@ -87,7 +87,7 @@ class ParallelImageRead:
 
     def __call__(self, image_filename):
         try:
-            cv2_im = image_reader.read(image_filename)
+            cv2_im = gb_image_reader.read(image_filename)
         except Exception as e:
             print("Failed to load image {0}: {1}".format(image_filename, e))
             return None
@@ -161,7 +161,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # Create FileCache instance
         self.file_cache = FileCache()
         self.file_cache.set_memory_bar(self.file_cache_progress)
-        # image_reader.set_file_cache(self.file_cache)
+        # gb_image_reader.set_file_cache(self.file_cache)
 
         # Add popup menu to cache progress bar
         self._cache_progress_menu = QtWidgets.QMenu(self.image_cache_progress)
@@ -266,9 +266,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self._file_cache_selection.setEnabled(is_enabled)
         self.action_load_files_in_cache.setEnabled(is_enabled)
         if is_enabled:
-            image_reader.set_file_cache(self.file_cache)
+            gb_image_reader.set_file_cache(self.file_cache)
         else:
-            image_reader.set_file_cache(None)
+            gb_image_reader.set_file_cache(None)
             self.file_cache.reset()
             self.file_cache.check_size_limit()
 
@@ -276,7 +276,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
     def update_file_max_cache_size(self):
         try:
             new_cache_size = self._file_cache_selection.get_selection_value()
-            image_reader.file_cache.set_max_cache_size(new_cache_size)
+            gb_image_reader.file_cache.set_max_cache_size(new_cache_size)
         except Exception as e:
             print(f"Failed to set file cache size with exception {e}")
 
@@ -475,7 +475,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # *.dxr DXO image format
         # *.ARW sony raw image format
 
-        extension_list = image_reader.extensions()
+        extension_list = gb_image_reader.extensions()
         extension_list.extend(['*.MP4'])
         full_list = []
         for e in extension_list:
