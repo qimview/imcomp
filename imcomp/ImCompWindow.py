@@ -167,7 +167,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self._cache_progress_menu = QtWidgets.QMenu(self.image_cache_progress)
 
         self.action_file_cache_enabled = QtGui.QAction("File cache enabled", self._cache_progress_menu, checkable=True)
-        self.action_file_cache_enabled.setChecked(False)
+        self.action_file_cache_enabled.setChecked(True)
         self._cache_progress_menu.addAction(self.action_file_cache_enabled)
         self._cache_progress_menu.triggered.connect(self.toggle_file_cache)
 
