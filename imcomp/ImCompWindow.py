@@ -4,9 +4,9 @@ from qimview.utils.qt_imports        import QtWidgets, QtCore, QtGui
 # from qimview.utils.utils             import get_time
 from qimview.utils.ViewerImage       import *
 from qimview.utils.menu_selection    import MenuSelection
-from qimview.utils.image_cache       import FileCache
 from qimview.image_viewers.MultiView import MultiView, ViewerType
 from imcomp.ImCompTable import ImCompTable
+from qimview.cache.image_cache       import FileCache
 
 from qimview.image_readers           import gb_image_reader
 
