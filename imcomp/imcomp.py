@@ -167,6 +167,7 @@ def main():
 					info["CFBundleName"] = "IMCOMP"
 
 	app = QtWidgets.QApplication(sys.argv)
+	app.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 	try:
 		app.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 	except Exception as e:

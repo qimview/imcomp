@@ -175,6 +175,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         cache_unit = 1024*1024 # 1 Mb
         total_memory = psutil.virtual_memory().total / cache_unit
         self._cache_sizes = {
+                    f'2%'  :int(0.02*total_memory), 
                     f'5%'  :int(0.05*total_memory), 
                     f'10%' :int(0.10*total_memory), 
                     f'20%' :int(0.20*total_memory),
