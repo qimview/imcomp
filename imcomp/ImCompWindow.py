@@ -6,7 +6,7 @@ from qimview.utils.ViewerImage       import *
 from qimview.utils.menu_selection    import MenuSelection
 from qimview.image_viewers.MultiView import MultiView, ViewerType
 from imcomp.ImCompTable import ImCompTable
-from qimview.cache.image_cache       import FileCache
+from qimview.cache      import FileCache
 
 from qimview.image_readers           import gb_image_reader
 
