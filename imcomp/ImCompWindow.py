@@ -146,10 +146,11 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.image_cache_progress = QtWidgets.QProgressBar()
         self.image_cache_progress.setMaximumHeight(25)
         self.image_cache_progress.setMaximumWidth(200)
+        self.image_cache_progress.setTextVisible(False)
         self.file_cache_progress = QtWidgets.QProgressBar()
         self.file_cache_progress.setMaximumHeight(25)
         self.file_cache_progress.setMaximumWidth(200)
-
+        self.file_cache_progress.setTextVisible(False)
         self.cache_progress_layout.addWidget(self.file_cache_progress)
         self.cache_progress_layout.addWidget(self.image_cache_progress)
 
@@ -175,13 +176,13 @@ class ImCompWindow(QtWidgets.QMainWindow):
         cache_unit = 1024*1024 # 1 Mb
         total_memory = psutil.virtual_memory().total / cache_unit
         self._cache_sizes = {
-                    f'2%'  :int(0.02*total_memory), 
-                    f'5%'  :int(0.05*total_memory), 
-                    f'10%' :int(0.10*total_memory), 
-                    f'20%' :int(0.20*total_memory),
-                    f'40%' :int(0.40*total_memory)
+                    f'2%:  {int(0.02*total_memory)} Mb' :int(0.02*total_memory), 
+                    f'5%:  {int(0.05*total_memory)} Mb' :int(0.05*total_memory), 
+                    f'10%: {int(0.10*total_memory)} Mb' :int(0.10*total_memory), 
+                    f'20%: {int(0.20*total_memory)} Mb' :int(0.20*total_memory),
+                    f'40%: {int(0.40*total_memory)} Mb' :int(0.40*total_memory)
         }
-        self._default_file_cache_size = '10%'
+        self._default_file_cache_size = f'10%: {int(0.10*total_memory)} Mb'
         # self._cache_progress_menu.addSection("File Cache")
         self._file_cache_selection = MenuSelection("File Cache", self._cache_progress_menu,
                                         self._cache_sizes, self._default_file_cache_size,
@@ -190,7 +191,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.action_load_files_in_cache = self._cache_progress_menu.addAction('Load files in cache')
         self._cache_progress_menu.addSeparator()
         # self._cache_progress_menu.addSection("Image Cache")
-        self._default_image_cache_size = '20%'
+        self._default_image_cache_size = f'20%: {int(0.20*total_memory)} Mb'
         self._image_cache_selection = MenuSelection("Image Cache", self._cache_progress_menu,
                                         self._cache_sizes, self._default_image_cache_size,
                                         self.update_image_max_cache_size)
@@ -277,7 +278,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
     def update_file_max_cache_size(self):
         try:
             new_cache_size = self._file_cache_selection.get_selection_value()
-            gb_image_reader.file_cache.set_max_cache_size(new_cache_size)
+            if gb_image_reader.file_cache is not None:
+                gb_image_reader.file_cache.set_max_cache_size(new_cache_size)
+            self.file_cache_progress.setToolTip(f"{new_cache_size} Mb")
         except Exception as e:
             print(f"Failed to set file cache size with exception {e}")
 
@@ -285,6 +288,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         try:
             new_cache_size = self._image_cache_selection.get_selection_value()
             self.multiview.cache.set_max_cache_size(new_cache_size)
+            self.image_cache_progress.setToolTip(f"{new_cache_size} Mb")
         except Exception as e:
             print(f"Failed to set image cache size with exception {e}")
 
