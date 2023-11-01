@@ -232,15 +232,21 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # self.antialiasing_menu.triggered.connect(self.toggle_antialiasing)
 
         # Set the number of comparisons
-        self.option_viewer_layout = self.option_menu.addMenu(self.tr('Viewer layout'))
+        self.option_viewer_layout = self.option_menu.addMenu('Viewer layout')
         self.viewer_layouts = {'1':1, '2':2, '3':3, '2+2':4, '3+2':5, '3+3':6, 
                                 '4+3':7, '4+4':8, '3+3+3':9}
         self.viewer_layout_selection = MenuSelection("Viewer Layout", self.option_viewer_layout,
                                     self.viewer_layouts, '1', self.update_viewer_layout)
 
-        self.raw_bayer = {'Read': None, 'Bayer0': CH_GBRG, 'Bayer1': CH_BGGR, 'Bayer2': CH_RGGB, 'Bayer3': CH_GRBG}
+        self.raw_bayer = {
+            'Read': None,
+            'Bayer0': ImageFormat.CH_GBRG,
+            'Bayer1': ImageFormat.CH_BGGR,
+            'Bayer2': ImageFormat.CH_RGGB,
+            'Bayer3': ImageFormat.CH_GRBG
+            }
         self.default_raw_bayer = 'Read'
-        self.option_raw_bayer = self.option_menu.addMenu(self.tr('RAW Bayer'))
+        self.option_raw_bayer = self.option_menu.addMenu('RAW Bayer')
         for l in self.raw_bayer.keys():
             action = QtGui.QAction(l,  self.option_raw_bayer, checkable=True)
             self.option_raw_bayer.addAction(action)
