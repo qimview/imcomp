@@ -6,6 +6,9 @@ import numpy as np
 from collections import OrderedDict
 from imcomp.qimtools.process_image_differences import ProcessImageDifferences
 import os
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from qimview.image_viewers import MultiView
 
 # Deal with compatibility issues of different Qt versions
 if hasattr(QtCore.Qt, 'Vertical'):
@@ -80,7 +83,7 @@ class ImCompTable(QtWidgets.QTableWidget):
     def set_info(self, image_list, useful_data, multiview):
         self.image_list   = image_list
         self.useful_data  = useful_data
-        self.multiview    = multiview
+        self.multiview    : MultiView = multiview
 
     def print_log(self, mess):
         if self.verbosity & self.verbosity_LIGHT:
@@ -109,7 +112,7 @@ class ImCompTable(QtWidgets.QTableWidget):
     def show_trace(self):
         return self.check_verbosity(self.verbosity_TRACE)
 
-    def current_cell_changed(self, _row, _column, _prev_row, _prev_column):
+    def current_cell_changed(self, _row: int, _column: int, _prev_row, _prev_column) -> None:
         # we need 
         #   - image_list
         #   - useful_data

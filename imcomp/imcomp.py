@@ -3,8 +3,8 @@ import argparse, logging
 import json
 from imcomp import version, fill_table_data
 
-from qimview.utils.qt_imports        import QtWidgets, QtCore
-from qimview.image_viewers.MultiView import ViewerType
+from qimview.utils.qt_imports   import QtWidgets, QtCore
+from qimview.image_viewers      import ViewerType
 
 from imcomp.ImCompWindow import ImCompWindow
 

@@ -1,10 +1,10 @@
 
 import sys
-from qimview.utils.qt_imports        import QtWidgets, QtCore, QtGui
-# from qimview.utils.utils             import get_time
-from qimview.utils.ViewerImage       import *
-from qimview.utils.menu_selection    import MenuSelection
-from qimview.image_viewers.MultiView import MultiView, ViewerType
+from qimview.utils.qt_imports         import QtWidgets, QtCore, QtGui
+# from qimview.utils.utils            import get_time
+from qimview.utils.viewer_image        import *
+from qimview.utils.menu_selection     import MenuSelection
+from qimview.image_viewers            import MultiView, ViewerType
 from imcomp.ImCompTable import ImCompTable
 from qimview.cache      import FileCache
 
