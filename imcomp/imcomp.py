@@ -2,11 +2,11 @@ import os, sys
 import argparse, logging
 import json
 from imcomp import version, fill_table_data
+import glob
 
 from qimview.utils.qt_imports   import QtWidgets, QtCore
 from qimview.image_viewers      import ViewerType
-
-from imcomp.ImCompWindow import ImCompWindow
+from imcomp.ImCompWindow        import ImCompWindow
 
 
 # *****************************************************************************
@@ -24,7 +24,12 @@ def main():
 
 	# Parse parse_args
 	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	parser.add_argument( 'directory_list', type=str, nargs='*', default='.', help='List of directories containing the processed scenarios')
+	parser.add_argument( 'directory_list', 
+					 type=str, nargs='*', 
+					 default='.', 
+					 help="List of directories containing the processed scenarios,"
+					            " glob module is used to generate a list from the input'"
+						)
 	parser.add_argument('-r','--report', help='Existing report file')
 	parser.add_argument('-rd', '--root_dir',  type=str, default='', help='root directory for directory list')
 	parser.add_argument('-f',  '--filters', default='',
@@ -102,6 +107,15 @@ def main():
 					_params['suffix_list'] += ','+_params['suffix2']
 			# create the list of (directory,suffix) pairs
 			directories = _params['directory_list']
+			print(f"{directories}")
+			replaced_dir = []
+			# use glob to replace directories containing special characters like * and ?
+			for d in directories:
+				replaced_dir.extend(glob.glob(d))
+			directories = replaced_dir
+			# Put the result back into _params for further use
+			_params['directory_list'] = directories
+			print(f"{directories}")
 			suffixes    = _params['suffix_list'].split(',')
 			list_size = max(len(directories), len(suffixes))
 			image_sets = []
