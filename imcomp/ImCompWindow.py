@@ -1,14 +1,12 @@
 
-import sys
-from qimview.utils.qt_imports         import QtWidgets, QtCore, QtGui
-# from qimview.utils.utils            import get_time
-from qimview.utils.viewer_image        import *
-from qimview.utils.menu_selection     import MenuSelection
-from qimview.image_viewers            import MultiView, ViewerType
-from imcomp.ImCompTable import ImCompTable
-from qimview.cache      import FileCache
-
+from qimview.utils.qt_imports       import QtWidgets, QtCore, QtGui
+from qimview.utils.viewer_image     import *
+from qimview.utils.menu_selection   import MenuSelection
+from qimview.image_viewers          import MultiView, ViewerType
+from imcomp.ImCompTable             import ImCompTable
+from qimview.cache                  import FileCache
 from qimview.image_readers           import gb_image_reader
+import sys
 
 # Only enable vlc player for windows by default
 use_vlc_player = sys.platform == "win32"
@@ -28,25 +26,17 @@ else:
         has_video_player = False
 
 from imcomp import fill_table_data
+import sys
 import os
 from shutil import copyfile
 import copyreg
 import multiprocessing
-
-# import matplotlib
-#import sys
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-# from collections import OrderedDict
 import types
-# from matplotlib import cm
 import psutil
-
-
-# Imports from utils folder
-
-
-
+# import matplotlib
+# from matplotlib import cm
 # matplotlib.rcParams.update({'font.size': 22})
+
 
 # Deal with compatibility issues of different Qt versions
 if hasattr(QtCore.Qt, 'Vertical'):
