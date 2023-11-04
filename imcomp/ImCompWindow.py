@@ -563,10 +563,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
             self.right_tabs_widget.setMovable(True)
             self.right_tabs_widget.addTab(video_tab, "Video")
             video_layout = QtWidgets.QHBoxLayout()
-            self.videoplayer1 = VideoPlayer()
-            video_layout.addWidget(self.videoplayer1)
-            self.videoplayer2 = VideoPlayer()
-            video_layout.addWidget(self.videoplayer2)
+            self.videoplayer1 = VideoPlayer(self)
+            video_layout.addWidget(self.videoplayer1, 1)
+            self.videoplayer2 = VideoPlayer(self)
+            video_layout.addWidget(self.videoplayer2, 1)
             video_tab.setLayout(video_layout)
 
         # --- main layout
