@@ -35,7 +35,7 @@ class ProcessImageDifferences(QtCore.QThread):
         print("ProcessDifferences run")
         # Is the display on the statusBar crashing sometimes ?
         # self.tw.statusBar().showMessage(" Processing image differences")
-        # Compute clean image differences: more heavy processing
+        # Compute image differences: more heavy processing
         self.time_start = get_time()
         inputs = dict()
         col = -1
@@ -43,12 +43,12 @@ class ProcessImageDifferences(QtCore.QThread):
         column_count = horizontal_header.count()
         for c in range(column_count):
             column_name = self.tw.horizontalHeaderItem(c).text()
-            if column_name == 'Clean diff':
+            if column_name == 'diff':
                 col = c
                 break
         if col == -1:
             col = 1
-            print("Clean diff column not found, using column 1")
+            print("diff column not found, using column 1")
         # First get list of row ids before the user gets time to reorder the table
         self.tw.hideColumn(col)
         row_ids = []

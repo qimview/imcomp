@@ -172,7 +172,7 @@ def CreateTableFromImages(imcomp_win, jpg_files, config):
 			for set_index in range(len(jpg_files[elt])):
 				jpg_file = jpg_files[elt][set_index]
 				original_stitched_filename = os.path.join(os.path.dirname(jpg_file),
-														  os.path.basename(jpg_file).replace('clean', 'original'))
+														  os.path.basename(jpg_file))
 				if not os.path.isfile(original_stitched_filename):
 					print("original filename not found {0}".format(original_stitched_filename))
 					suffix = image_sets[0]['suffix']
@@ -201,7 +201,7 @@ def CreateTableFromImages(imcomp_win, jpg_files, config):
 
 def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr', '.jpg']):
 	'''
-	List all jpgs containing clean_live substring in their filename and the specified suffix and name_filter
+	List all jpgs containing filters (if any) in their filename and the specified suffix and name_filter
 	:param dir:
 	:param name_filters:
 	:param suffix:
@@ -211,7 +211,6 @@ def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr',
 	filename_list1 = []
 	filters = name_filters.split(',')
 	# Find all mask in subdirectories
-	# find *clean_live*.jpg in first directory
 	for root, directories, filenames in os.walk(dir):
 		for filename in filenames:
 			extension_ok = False
@@ -222,7 +221,6 @@ def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr',
 			# filter on all substrings
 			filter_ok = True
 			jpg_filters = filters
-			# jpg_filters.append("clean_live") # for JPG, filter on clean_live substring too
 			for f in jpg_filters:
 				if f not in filename:
 					filter_ok = False

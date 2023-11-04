@@ -380,7 +380,7 @@ class ImCompTable(QtWidgets.QTableWidget):
 
     def compute_image_differences_thread(self, setProgress, statusBar):
         statusBar.showMessage(" Processing image differences")
-        # Compute clean image differences: more heavy processing
+        # Compute image differences: more heavy processing
         self.differences_worker = ProcessImageDifferences(self)
         self.differences_worker.updateProgress.connect(setProgress)
         self.differences_worker.start()
