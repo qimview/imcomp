@@ -231,13 +231,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # self.option_menu.addAction(self.antialiasing_menu)
         # self.antialiasing_menu.triggered.connect(self.toggle_antialiasing)
 
-        # Set the number of comparisons
-        # self.option_viewer_layout = self.option_menu.addMenu('Viewer layout')
-        # self.viewer_layouts = {'1':1, '2':2, '3':3, '2+2':4, '3+2':5, '3+3':6, 
-        #                         '4+3':7, '4+4':8, '3+3+3':9}
-        # self.viewer_layout_selection = MenuSelection("Viewer Layout", self.option_viewer_layout,
-        #                             self.viewer_layouts, '1', self.set_number_of_viewers)
-
         self.raw_bayer = {
             'Read': None,
             'Bayer0': ImageFormat.CH_GBRG,
@@ -622,14 +615,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 self.videoplayer2.set_video(file_list[1])
                 self.videoplayer2.show()
             else:
-                # layouts = [l for l,v in self.viewer_layouts.items() if v == nb_selections]
-                # if len(layouts)>0:
-                #     self.viewer_layout_selection.set_selection(layouts[0])
-                # menu = self.option_viewer_layout
-                # for action in menu.actions():
-                #     if action.text() == self.viewer_layouts[nb_selections-1]:
-                #         action.setChecked(True)
-
                 def get_name(path, maxlength=15):
                     return os.path.splitext(os.path.basename(path))[0][-maxlength:]
 
