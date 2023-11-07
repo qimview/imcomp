@@ -231,13 +231,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # self.option_menu.addAction(self.antialiasing_menu)
         # self.antialiasing_menu.triggered.connect(self.toggle_antialiasing)
 
-        # Set the number of comparisons
-        self.option_viewer_layout = self.option_menu.addMenu('Viewer layout')
-        self.viewer_layouts = {'1':1, '2':2, '3':3, '2+2':4, '3+2':5, '3+3':6, 
-                                '4+3':7, '4+4':8, '3+3+3':9}
-        self.viewer_layout_selection = MenuSelection("Viewer Layout", self.option_viewer_layout,
-                                    self.viewer_layouts, '1', self.update_viewer_layout)
-
         self.raw_bayer = {
             'Read': None,
             'Bayer0': ImageFormat.CH_GBRG,
@@ -320,15 +313,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
     def set_readsize(self):
         self.multiview.set_read_size(self.read_size_selection.get_selection())
-
-    def update_viewer_layout(self, force_viewer_images=False):
-        if self.check_verbosity(self.verbosity_LIGHT):
-            print("*** ImCompWindow.update_viewer_layout()")
-        self.multiview.update_viewer_layout(self.viewer_layout_selection.get_selection())
-        self.multiview.viewer_grid_layout.update()
-        if force_viewer_images:
-            self.multiview.set_viewer_images()
-        self.multiview.update_image()
 
     def update_raw_bayer_callback(self):
         # change bayer phase of current displayed image?
@@ -425,10 +409,34 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.filesystem_tree.setRootIndex(current_index)
 
     def set_next_row(self):
+
+        selected_ranges = self.table_widget.selectedRanges()
+        new_ranges = []
+        # Get selected range and increase positions
+        # not working well for the moment
+        # if len(selected_ranges) == 1:
+        #     _range = selected_ranges[0]
+        #     left   = _range.leftColumn()
+        #     right  = _range.rightColumn()
+        #     top    = _range.topRow()
+        #     bottom = _range.bottomRow()
+        #     out_range = QtWidgets.QTableWidgetSelectionRange(top, left, top, right)
+        #     in_range   = QtWidgets.QTableWidgetSelectionRange(bottom+1, left, bottom+1, right)
+        #     # new_ranges.append(new_range)
+        #     # self.table_widget.selectRow(self.table_widget.previous_row+1)
+        #     self.table_widget.setRangeSelected(out_range, False)
+        #     self.table_widget.setRangeSelected(in_range, True)
+        # else:
         self.table_widget.selectRow(self.table_widget.previous_row+1)
+        # Set focus to widget under cursor
+        widget = QtWidgets.QApplication.instance().widgetAt(QtGui.QCursor.pos())
+        if widget: widget.setFocus()
 
     def set_previous_row(self):
         self.table_widget.selectRow(max(0,self.table_widget.previous_row-1))
+        # Set focus to widget under cursor
+        widget = QtWidgets.QApplication.instance().widgetAt(QtGui.QCursor.pos())
+        if widget: widget.setFocus()
 
     def update_layout(self):
         print("update_layout")
@@ -607,14 +615,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 self.videoplayer2.set_video(file_list[1])
                 self.videoplayer2.show()
             else:
-                layouts = [l for l,v in self.viewer_layouts.items() if v == nb_selections]
-                if len(layouts)>0:
-                    self.viewer_layout_selection.set_selection(layouts[0])
-                # menu = self.option_viewer_layout
-                # for action in menu.actions():
-                #     if action.text() == self.viewer_layouts[nb_selections-1]:
-                #         action.setChecked(True)
-
                 def get_name(path, maxlength=15):
                     return os.path.splitext(os.path.basename(path))[0][-maxlength:]
 
@@ -622,8 +622,12 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 for idx, im in enumerate(file_list):
                     image_key = f'{idx}...{get_name(im)}'
                     images_dict[image_key] = im
+                print(f" images_dict {images_dict}")
                 self.multiview.set_images(images_dict)
-                self.update_viewer_layout(force_viewer_images=True)
+                self.multiview.set_number_of_viewers(len(images_dict))
+                self.multiview.set_viewer_images()
+                # self.multiview.viewer_grid_layout.update()
+                self.multiview.update_image()
 
     def handleNewWindow(self):
         window = QtWidgets.QMainWindow(self)

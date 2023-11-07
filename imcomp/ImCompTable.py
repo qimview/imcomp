@@ -79,6 +79,7 @@ class ImCompTable(QtWidgets.QTableWidget):
         self.setHorizontalHeader(hheader)
         # self.cellClicked.connect(self.cell_was_clicked)
         self.currentCellChanged.connect(self.current_cell_changed)
+        self.itemSelectionChanged.connect(self.item_selection_changed)
 
     def set_info(self, image_list, useful_data, multiview):
         self.image_list   = image_list
@@ -121,11 +122,12 @@ class ImCompTable(QtWidgets.QTableWidget):
         """_summary_
 
         Args:
-            _row (_type_): _description_
-            _column (_type_): _description_
-            _prev_row (_type_): _description_
-            _prev_column (_type_): _description_
+            _row (int): current cell row
+            _column (int): current cell column
+            _prev_row (_type_): previous cell row
+            _prev_column (_type_): previous cell column
         """
+        print(f"current_cell_changed {_row}")
         cell_changed_start = get_time()
         # print "current_cell_changed {0} {1}".format(_row, _column)
         # TODO: get column name
@@ -142,30 +144,44 @@ class ImCompTable(QtWidgets.QTableWidget):
                 _font.setBold(True)
                 self.item(self.previous_row, 0).setFont(_font)
 
-
         _row_id = self.item(_row, 0).text()
         self._row_id = _row_id
 
-        # TODO: check for 'keep zoom'  feature in MultiView
-        # if _row_id != self.output_label_current_rowid:
-        # 	self.output_label_current_rowid = _row_id
-        # 	# # reset crop
-        # 	# # upper-left (x,y), lower-right (x,y)
-        # 	# if not self.keep_zoom.isChecked():
-        # 	# 	self.output_label_crop = (0., 0., 1., 1.)
-
+    def item_selection_changed(self) -> None:
         try:
-            pos = 0
-            while self.image_list[pos] == 'none':
-                pos = pos + 1
-
-            # Update MultiView image list?
+            print('item_selection_changed')
+            selected_ranges = self.selectedRanges()
+            print(f'selected_ranges {selected_ranges}')
             image_dict = {}
-            for im in self.image_list:
-                if im != 'none':
-                    image_dict[im] = self.useful_data[self._row_id][im]
-            self.print_log(f" image_dict = {image_dict}")
+            # number of selected rows
+            total_selected = 0
+            for _range in selected_ranges:
+                total_selected +=  _range.bottomRow()-_range.topRow()+1
+            print(f"total_selected {total_selected}")
+            idx = 0
+            for _range in selected_ranges:
+                print(f" range rows {_range.topRow()} {_range.bottomRow()}")
+                for _row in range(_range.topRow(), _range.bottomRow()+1):
+                    _row_id = self.item(_row, 0).text()
+                    for im in self.image_list:
+                        # TODO: improve this part, for the moment, if only 1 row is selected,
+                        # maintain previous names
+                        if im != 'none':
+                            key_str = f"{im}_{idx}" if total_selected > 1 else f"{im}"
+                            image_dict[key_str] = self.useful_data[_row_id][im]
+                    idx += 1
+            print(f"image_dict {image_dict}")
             self.multiview.set_images(image_dict)
+            nb_inputs = len(image_dict)
+            max_viewers = 100
+            print(f"self.image_list {self.image_list}")
+            row_size = len([ l for l in self.image_list if l != 'none'])
+            if nb_inputs>=1 and nb_inputs<=max_viewers:
+                self.multiview.set_number_of_viewers(nb_inputs, max_columns=row_size)
+                self.multiview.set_viewer_images()
+                self.multiview.viewer_grid_layout.update()
+                # self.multiview.update_image()
+                # self.multiview.setFocus()
             self.multiview.update_image()
         except Exception as e:
             print(f"{e}")
