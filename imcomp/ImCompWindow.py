@@ -637,8 +637,12 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 for idx, im in enumerate(file_list):
                     image_key = f'{idx}...{get_name(im)}'
                     images_dict[image_key] = im
+                print(f" images_dict {images_dict}")
                 self.multiview.set_images(images_dict)
-                # self.set_number_of_viewers(force_viewer_images=True)
+                self.multiview.set_number_of_viewers(len(images_dict))
+                self.multiview.set_viewer_images()
+                # self.multiview.viewer_grid_layout.update()
+                self.multiview.update_image()
 
     def handleNewWindow(self):
         window = QtWidgets.QMainWindow(self)
