@@ -287,6 +287,11 @@ class ImCompTable(QtWidgets.QTableWidget):
             os.getcwd(), os.path.splitext(self.default_report_file)[0]+'.xls')
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save as excel file', default_output, ".xls(*.xls)")
+        import importlib.util
+        xlwt_spec = importlib.util.find_spec("xlwt")
+        if xlwt_spec is None:
+            print("Failed to load module xlwt, cannot export to excel file")
+            return
         import xlwt
         wbk = xlwt.Workbook()
         self.sheet = wbk.add_sheet("sheet", cell_overwrite_ok=True)
