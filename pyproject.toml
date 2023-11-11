@@ -32,8 +32,9 @@ extra = [
 
 
 [project.urls]
-"Homepage" = "https://github.com/karlkrissian/imcomp"
-"Bug Tracker" = "https://github.com/karlkrissian/imcomp/issues"
+"Homepage" = "https://github.com/qimview/imcomp"
+"Wiki" = "hhttps://github.com/qimview/imcomp/wiki"
+"Bug Tracker" = "https://github.com/qimview/imcomp/issues"
 
 [project.scripts]
 imcomp = "imcomp.imcomp:main"
