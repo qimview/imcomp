@@ -6,7 +6,7 @@ import glob
 
 from qimview.utils.qt_imports   import QtWidgets, QtCore
 from qimview.image_viewers      import ViewerType
-from imcomp.ImCompWindow        import ImCompWindow
+from imcomp.imcomp_window        import ImCompWindow
 
 
 # *****************************************************************************
