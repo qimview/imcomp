@@ -3,7 +3,7 @@ from qimview.utils.qt_imports       import QtWidgets, QtCore, QtGui
 from qimview.utils.viewer_image     import *
 from qimview.utils.menu_selection   import MenuSelection
 from qimview.image_viewers          import MultiView, ViewerType
-from imcomp.ImCompTable             import ImCompTable
+from imcomp.imcomp_table            import ImCompTable
 from qimview.cache                  import FileCache
 from qimview.image_readers          import gb_image_reader
 import sys
