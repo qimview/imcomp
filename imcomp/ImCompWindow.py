@@ -5,8 +5,9 @@ from qimview.utils.menu_selection   import MenuSelection
 from qimview.image_viewers          import MultiView, ViewerType
 from imcomp.ImCompTable             import ImCompTable
 from qimview.cache                  import FileCache
-from qimview.image_readers           import gb_image_reader
+from qimview.image_readers          import gb_image_reader
 import sys
+from typing                         import Optional, Any, Dict
 
 # Only enable vlc player for windows by default
 use_vlc_player = sys.platform == "win32"
@@ -190,9 +191,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # Enable or Disable file cache
         self.toggle_file_cache()
 
-        self.params = None
+        self.params : Optional[Dict[str, Any]] = None
         self.viewer_mode = viewer_mode
-        self.table_widget = None
+        self.table_widget : Optional[ImCompTable] = None
         self.clip = QtWidgets.QApplication.clipboard()
 
         self.image1 = dict()
@@ -330,9 +331,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.table_widget.create()
 
     def set_table_info(self):
-        self.table_widget.set_info(self.image_list, self.useful_data, self.multiview)
+        if self.table_widget:
+            self.table_widget.set_info(self.image_list, self.useful_data, self.multiview)
 
-    def set_params(self, params):
+    def set_params(self, params : Dict[str, Any]) -> None:
         self.params = params
 
     def get_params(self):
@@ -343,7 +345,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         list_jpegs = fill_table_data.parse_images(self.params['image_sets'], self.params['filters'],
                                                     self.params['ext'])
         fill_table_data.CreateTableFromImages(self, list_jpegs, config)
-        if self.params['report']:
+        if self.params['report'] and self.table_widget:
             self.table_widget.read_report(self.params['report'], self.statusBar(), self.setProgress)
 
     def set_default_report_file(self, filename):

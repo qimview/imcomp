@@ -177,7 +177,8 @@ class ImCompTable(QtWidgets.QTableWidget):
             print(f"self.image_list {self.image_list}")
             row_size = len([ l for l in self.image_list if l != 'none'])
             if nb_inputs>=1 and nb_inputs<=max_viewers:
-                self.multiview.set_number_of_viewers(nb_inputs, max_columns=row_size)
+                if total_selected>1 or self.multiview.nb_viewers_used > nb_inputs:
+                    self.multiview.set_number_of_viewers(nb_inputs, max_columns=row_size)
                 self.multiview.set_viewer_images()
                 self.multiview.viewer_grid_layout.update()
                 # self.multiview.update_image()
