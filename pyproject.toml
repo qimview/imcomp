@@ -33,7 +33,7 @@ extra = [
 
 [project.urls]
 "Homepage" = "https://github.com/qimview/imcomp"
-"Wiki" = "hhttps://github.com/qimview/imcomp/wiki"
+"Wiki" = "https://github.com/qimview/imcomp/wiki"
 "Bug Tracker" = "https://github.com/qimview/imcomp/issues"
 
 [project.scripts]
