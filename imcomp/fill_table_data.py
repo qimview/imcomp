@@ -199,7 +199,7 @@ def CreateTableFromImages(imcomp_win, jpg_files, config):
 	return imcomp_win
 
 
-def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr', '.jpg']):
+def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr', '.jpg'], recursive=True):
 	'''
 	List all jpgs containing filters (if any) in their filename and the specified suffix and name_filter
 	:param dir:
@@ -227,6 +227,7 @@ def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr',
 					break
 			if extension_ok and filter_ok:
 				filename_list1.append(os.path.join(root, filename))
+		if not recursive: break
 
 	# Create list of common outputs
 	list_stills = dict()
@@ -248,12 +249,12 @@ def parse_images_from_dir(dir, name_filters, suffix, extensions=['.png', '.dxr',
 	return list_stills
 
 
-def parse_images(image_sets, name_filter, extensions):
+def parse_images(image_sets, name_filter, extensions, recursive=True):
 	lists = []
 	for image_set in image_sets:
 		print("Parsing for {}".format(image_set['suffix']))
 		list_stills = parse_images_from_dir(image_set['directory'], name_filter, image_set['suffix'],
-											extensions=extensions)
+											extensions=extensions, recursive=recursive)
 		lists.append(list_stills)
 
 	if len(lists) == 0:

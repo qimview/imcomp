@@ -6,7 +6,7 @@ import glob
 
 from qimview.utils.qt_imports   import QtWidgets, QtCore
 from qimview.image_viewers      import ViewerType
-from imcomp.imcomp_window        import ImCompWindow
+from imcomp                     import ImCompWindow
 
 
 # *****************************************************************************
@@ -32,6 +32,7 @@ def main():
 						)
 	parser.add_argument('-r','--report', help='Existing report file')
 	parser.add_argument('-rd', '--root_dir',  type=str, default='', help='root directory for directory list')
+	parser.add_argument('-rec', '--recursive',  action='store_true', help='recursively parse directories')
 	parser.add_argument('-f',  '--filters', default='',
 	                    help='Filter images containing the specified string: in case of jpg list filter on resulting '
 							 'image name, in case of json, filter on input image name'+

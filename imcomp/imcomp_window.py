@@ -3,14 +3,22 @@ from qimview.utils.qt_imports       import QtWidgets, QtCore, QtGui
 from qimview.utils.viewer_image     import *
 from qimview.utils.menu_selection   import MenuSelection
 from qimview.image_viewers          import MultiView, ViewerType
-from imcomp.imcomp_table            import ImCompTable
+from .imcomp_table                  import ImCompTable
 from qimview.cache                  import FileCache
 from qimview.image_readers          import gb_image_reader
 import sys
 from typing                         import Optional, Any, Dict
-
+from .imcomp_config                 import ImCompConfig
 # Only enable vlc player for windows by default
-use_vlc_player = sys.platform == "win32"
+
+userconf = ImCompConfig.user_config()
+try:
+    use_vlc_player = userconf.get_boolean('VIDEOPLAYER','UseVLC')
+    print(f"use_vlc_player {use_vlc_player}")
+except Exception as e:
+    print(f"Failed to get UseVLC config {e}")
+    use_vlc_player = False # sys.platform == "win32"
+
 if use_vlc_player:
     try:
         from qimview.video_player.vlc_player import VLCPlayer as VideoPlayer
@@ -341,12 +349,13 @@ class ImCompWindow(QtWidgets.QMainWindow):
         return self.params
 
     def fill_data(self, config):
-        jpeg_only = self.params['config'] == 'default'
-        list_jpegs = fill_table_data.parse_images(self.params['image_sets'], self.params['filters'],
-                                                    self.params['ext'])
-        fill_table_data.CreateTableFromImages(self, list_jpegs, config)
-        if self.params['report'] and self.table_widget:
-            self.table_widget.read_report(self.params['report'], self.statusBar(), self.setProgress)
+        if self.params:
+            jpeg_only = self.params['config'] == 'default'
+            list_jpegs = fill_table_data.parse_images(self.params['image_sets'], self.params['filters'],
+                                                        self.params['ext'], self.params['recursive'])
+            fill_table_data.CreateTableFromImages(self, list_jpegs, config)
+            if self.params['report'] and self.table_widget:
+                self.table_widget.read_report(self.params['report'], self.statusBar(), self.setProgress)
 
     def set_default_report_file(self, filename):
         print(" set_default_report_file {0}".format(filename))
