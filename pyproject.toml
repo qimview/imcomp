@@ -40,4 +40,4 @@ extra = [
 imcomp = "imcomp.imcomp:main"
 
 [tool.setuptools.dynamic]
-version = {attr = "imcomp.__version__"}
+version = {attr = "imcomp.version.__version__"}
