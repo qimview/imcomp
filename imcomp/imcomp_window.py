@@ -613,6 +613,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
             if filePath not in file_list:
                 file_list.append(filePath)
         print(f"file_list {file_list}")
+        self.on_selection(file_list)
+
+    def on_selection(self, file_list):
         nb_selections = len(file_list)
         if has_video_player and nb_selections == 1 and file_list[0].lower().endswith("mp4"):
             self.videoplayer1.set_video(file_list[0])
