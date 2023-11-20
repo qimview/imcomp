@@ -379,9 +379,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.table_widget.write_file(self.params, selected_rows, save_folder)
 
     def export_to_clipboard(self):
-        self.multiview.save_image_clipboard = True
+        self.multiview.set_clipboard(self.clip, save_image=True)
         self.multiview.update_image()
-        self.multiview.save_image_clipboard = False
+        self.multiview.set_clipboard(None,      save_image=False)
 
     def export_to_excel(self):
         self.table_widget.export_to_excel()
