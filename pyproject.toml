@@ -22,7 +22,7 @@ dependencies = [
     "numpy>=1.21.0",
     "opencv_python>=4.2",
     "psutil>=5.8.0",
-    "qimview>=1.0.7",
+    "qimview>=1.0.8",
 ]
 
 [project.optional-dependencies]

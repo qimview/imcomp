@@ -518,10 +518,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.filesystem_tree.setSortingEnabled(True)
         self.filesystem_tree.setWindowTitle("Dir View")
         # self.filesystem_tree.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectItems)
-        if 'ExtendedSelection' in QtWidgets.QAbstractItemView.SelectionMode.__dict__:
-            self.filesystem_tree.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
-        else:
-            self.filesystem_tree.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.filesystem_tree.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         self.filesystem_tree.selectionModel().selectionChanged.connect( self.on_filesystem_selection_changed)
 
         vertical_layout.addWidget(self.filesystem_tree)
