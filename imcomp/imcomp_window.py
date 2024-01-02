@@ -6,7 +6,6 @@ from qimview.image_viewers          import MultiView, ViewerType
 from .imcomp_table                  import ImCompTable
 from qimview.cache                  import FileCache
 from qimview.image_readers          import gb_image_reader
-import sys
 from typing                         import Optional, Any, Dict
 from .imcomp_config                 import ImCompConfig
 # Only enable vlc player for windows by default
@@ -19,20 +18,27 @@ except Exception as e:
     print(f"Failed to get UseVLC config {e}")
     use_vlc_player = False # sys.platform == "win32"
 
-if use_vlc_player:
-    try:
-        from qimview.video_player.vlc_player import VLCPlayer as VideoPlayer
-        has_video_player = True
-    except Exception as e:
-        print(f"Failed to import VLCPlayer {e}")
-        has_video_player = False
-else:
-    try:
-        from qimview.video_player.video_player import VideoPlayer
-        has_video_player = True
-    except Exception as e:
-        print(f"Failed to import video_player {e}")
-        has_video_player = False
+try:
+    from qimview.video_player.video_player_av import VideoPlayerAV as VideoPlayer
+    has_video_player = True
+except Exception as e:
+    print(f"Failed to import VideoPlayerAV: {e}")
+    has_video_player = False
+
+# if use_vlc_player:
+#     try:
+#         from qimview.video_player.vlc_player import VLCPlayer as VideoPlayer
+#         has_video_player = True
+#     except Exception as e:
+#         print(f"Failed to import VLCPlayer {e}")
+#         has_video_player = False
+# else:
+#     try:
+#         from qimview.video_player.video_player import VideoPlayer
+#         has_video_player = True
+#     except Exception as e:
+#         print(f"Failed to import video_player {e}")
+#         has_video_player = False
 
 from imcomp import fill_table_data
 import sys
