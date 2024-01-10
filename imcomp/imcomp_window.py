@@ -585,9 +585,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
             self.right_tabs_widget.setMovable(True)
             self.right_tabs_widget.addTab(video_tab, "Video")
             video_layout = QtWidgets.QHBoxLayout()
-            self.videoplayer1 = VideoPlayer(self)
+            self.videoplayer1 : VideoPlayer = VideoPlayer(self)
             video_layout.addWidget(self.videoplayer1, 1)
-            self.videoplayer2 = VideoPlayer(self)
+            self.videoplayer2 : VideoPlayer = VideoPlayer(self)
             video_layout.addWidget(self.videoplayer2, 1)
             video_tab.setLayout(video_layout)
 
@@ -624,6 +624,8 @@ class ImCompWindow(QtWidgets.QMainWindow):
             self.videoplayer1.set_video(file_list[0])
             self.videoplayer1.set_synchronize(None)
             self.videoplayer2.hide()
+            self.videoplayer1.set_name('player1')
+            self.videoplayer1.init_and_display()
         else:
             if has_video_player and nb_selections ==2 and file_list[0].lower().endswith("mp4") and file_list[1].lower().endswith("mp4"):
                 self.videoplayer1.set_synchronize(self.videoplayer2)
@@ -631,6 +633,11 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 self.videoplayer1.set_video(file_list[0])
                 self.videoplayer2.set_video(file_list[1])
                 self.videoplayer2.show()
+                self.videoplayer1.set_name('player1')
+                self.videoplayer1.init_and_display()
+
+                self.videoplayer2.set_name('player2')
+                self.videoplayer2.init_and_display()
             else:
                 def get_name(path, maxlength=15):
                     return os.path.splitext(os.path.basename(path))[0][-maxlength:]
