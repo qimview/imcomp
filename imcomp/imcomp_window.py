@@ -502,7 +502,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # *.ARW sony raw image format
 
         extension_list = gb_image_reader.extensions()
-        extension_list.extend(['*.MP4'])
+        extension_list.extend(['*.MP4','*.360'])
         full_list = []
         for e in extension_list:
             if e.lower() not in full_list:
@@ -620,14 +620,18 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
     def on_selection(self, file_list):
         nb_selections = len(file_list)
-        if has_video_player and nb_selections == 1 and file_list[0].lower().endswith("mp4"):
+        # TODO: improve this part
+        def is_video(f):
+            return f.lower().endswith("mp4") or f.lower().endswith(".360")
+
+        if has_video_player and nb_selections == 1 and is_video(file_list[0]):
             self.videoplayer1.set_video(file_list[0])
             self.videoplayer1.set_synchronize(None)
             self.videoplayer2.hide()
             self.videoplayer1.set_name('player1')
             self.videoplayer1.init_and_display()
         else:
-            if has_video_player and nb_selections ==2 and file_list[0].lower().endswith("mp4") and file_list[1].lower().endswith("mp4"):
+            if has_video_player and nb_selections ==2 and is_video(file_list[0]) and is_video(file_list[1]):
                 self.videoplayer1.set_synchronize(self.videoplayer2)
                 self.videoplayer2.set_synchronize(self.videoplayer1)
                 self.videoplayer1.set_video(file_list[0])
