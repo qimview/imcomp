@@ -34,7 +34,7 @@ except Exception as e:
 #         has_video_player = False
 # else:
 #     try:
-#         from qimview.video_player.video_player import VideoPlayer
+#         from qimview.video_player.qt_video_player import QtVideoPlayer as VideoPlayer
 #         has_video_player = True
 #     except Exception as e:
 #         print(f"Failed to import video_player {e}")
@@ -642,6 +642,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
                 self.videoplayer2.set_name('player2')
                 self.videoplayer2.init_and_display()
+                self.videoplayer1.compare(self.videoplayer2)
             else:
                 def get_name(path, maxlength=15):
                     return os.path.splitext(os.path.basename(path))[0][-maxlength:]
