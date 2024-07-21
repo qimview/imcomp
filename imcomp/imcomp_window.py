@@ -1,10 +1,16 @@
 
+import os
+import copyreg
+import multiprocessing
+import types
+import psutil
+
 from qimview.utils.qt_imports       import QtWidgets, QtCore, QtGui
 from qimview.utils.viewer_image     import *
 from qimview.utils.menu_selection   import MenuSelection
 from qimview.image_viewers          import MultiView, ViewerType
 from .imcomp_table                  import ImCompTable
-from qimview.cache                  import FileCache
+from qimview.cache                  import ImageCache, FileCache
 from qimview.image_readers          import gb_image_reader
 from typing                         import Optional, Any, Dict
 from .imcomp_config                 import ImCompConfig
@@ -41,13 +47,7 @@ except Exception as e:
 #         has_video_player = False
 
 from imcomp import fill_table_data
-import sys
-import os
-from shutil import copyfile
-import copyreg
-import multiprocessing
-import types
-import psutil
+
 # import matplotlib
 # from matplotlib import cm
 # matplotlib.rcParams.update({'font.size': 22})
@@ -87,6 +87,7 @@ def is_int_number(s):
         return False
 
 class ParallelImageRead:
+    """ Not used? """
     def __init__(self):
         pass
 
@@ -122,13 +123,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
         self.create_menu()
 
-        # Not maintained
-        # # add figure widget on the right
-        # # show current column value vs all sorted values
-        # self.value_in_range_fig = Figure()
-        # self.value_in_range_canvas = FigureCanvas(self.value_in_range_fig)
-        # self.value_in_range_canvas.setMinimumSize(400, 100)
-
         self.menu_compute = self.menuBar().addMenu(self.tr('Compute'))
         start_bc = self.menu_compute.addAction(self.tr('Resulting image differences'))
         start_bc.triggered.connect(self.compute_image_differences)
@@ -140,6 +134,9 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
         self.progressBar = QtWidgets.QProgressBar()
         self.progressBar.setMaximumWidth(210)
+
+        # ImageCache instance shared between MultiView instances
+        self.image_cache = ImageCache()
 
         self.cache_progress_widget = QtWidgets.QWidget()
         self.cache_progress_widget.setMaximumWidth(200)
@@ -187,7 +184,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
                     f'20%: {int(0.20*total_memory)} Mb' :int(0.20*total_memory),
                     f'40%: {int(0.40*total_memory)} Mb' :int(0.40*total_memory)
         }
-        self._default_file_cache_size = f'10%: {int(0.10*total_memory)} Mb'
+        if total_memory<16000:
+            self._default_file_cache_size = f'10%: {int(0.10*total_memory)} Mb'
+        else:
+            self._default_file_cache_size = f'5%:  {int(0.05*total_memory)} Mb'
         # self._cache_progress_menu.addSection("File Cache")
         self._file_cache_selection = MenuSelection("File Cache", self._cache_progress_menu,
                                         self._cache_sizes, self._default_file_cache_size,
@@ -196,7 +196,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.action_load_files_in_cache = self._cache_progress_menu.addAction('Load files in cache')
         self._cache_progress_menu.addSeparator()
         # self._cache_progress_menu.addSection("Image Cache")
-        self._default_image_cache_size = f'20%: {int(0.20*total_memory)} Mb'
+        if total_memory<16000:
+            self._default_image_cache_size = f'20%: {int(0.20*total_memory)} Mb'
+        else:
+            self._default_image_cache_size = f'10%: {int(0.10*total_memory)} Mb'
         self._image_cache_selection = MenuSelection("Image Cache", self._cache_progress_menu,
                                         self._cache_sizes, self._default_image_cache_size,
                                         self.update_image_max_cache_size)
@@ -220,6 +223,11 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.verbosity_DEBUG = 1 << 5
         # self.set_verbosity(self.verbosity_TIMING_DETAILED)
         # self.set_verbosity(self.verbosity_TRACE)
+
+        # List of MultiView (multiple image viewers) for different tabs
+        self.multiviews : dict[QtWidgets.QWidget, MultiView] = {}
+        # Current MultiView
+        self.multiview : MultiView | None = None
 
     def create_menu(self):
         self.option_menu = self.menuBar().addMenu(self.tr('File'))
@@ -455,6 +463,61 @@ class ImCompWindow(QtWidgets.QMainWindow):
         widget = QtWidgets.QApplication.instance().widgetAt(QtGui.QCursor.pos())
         if widget: widget.setFocus()
 
+
+    def new_multiview_widget(self):
+        # --- create multiview tab
+        multiview_widget = QtWidgets.QWidget()
+        multiview_layout = QtWidgets.QVBoxLayout()
+        multiview_widget.setLayout(multiview_layout)
+
+        # within parent widget and layout
+        self.multiview = MultiView(parent=multiview_widget, viewer_mode=self.viewer_mode, 
+                                   image_cache = self.image_cache)
+        self.multiviews[multiview_widget] = self.multiview
+        self.multiview.set_key_down_callback(self.set_next_row)
+        self.multiview.set_key_up_callback  (self.set_previous_row)
+        self.multiview.set_cache_memory_bar(self.image_cache_progress)
+        self.multiview.set_verbosity(self.verbosity)
+        multiview_layout.addWidget(self.multiview, 1)
+
+        self.multiview.set_message_callback( lambda m : self.statusBar().showMessage(m))
+
+        images_dict = {}
+        for im in self.image_list:
+            images_dict[im] = None
+        self.multiview.set_images(images_dict)
+        self.multiview.update_layout()
+        return multiview_widget
+
+    def add_multiview_tab(self, tab_name):
+        multiview_widget = self.new_multiview_widget()
+        index = self.right_tabs_widget.addTab(multiview_widget, tab_name)
+        self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
+
+    def add_plus_tab(self):
+        self.plus_tab_widget = QtWidgets.QWidget()
+        index = self.right_tabs_widget.addTab(self.plus_tab_widget, "+")
+        self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
+
+    def righttabs_clicked(self, index:int):
+        print(f"righttab_clicked {index=}")
+        tab = self.right_tabs_widget.widget(index)
+        if tab==self.plus_tab_widget:
+            multiview_widget = self.new_multiview_widget()
+            self.right_tabs_widget.insertTab(index, multiview_widget, "Images")
+        else:
+            if tab in self.multiviews:
+                # select the multiview of the clicked tab
+                self.multiview = self.multiviews[tab]
+
+    def close_tab(self, index:int):
+        tab = self.right_tabs_widget.widget(index)
+        self.right_tabs_widget.removeTab(index)
+        self.multiviews.pop(tab)
+        current_widget = self.right_tabs_widget.currentWidget()
+        if current_widget in self.multiviews:
+            self.multiview = self.multiviews[current_widget]
+
     def update_layout(self):
         print("update_layout")
 
@@ -533,41 +596,19 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
         # ----- Right widget -----
         self.right_tabs_widget = QtWidgets.QTabWidget()
+        self.right_tabs_widget.setTabsClosable(True)
 
         # --- create multiview tab
+        self.add_multiview_tab(self.params['config_name'])
 
-        multiview_widget = QtWidgets.QWidget()
-        multiview_layout = QtWidgets.QVBoxLayout()
-        multiview_widget.setLayout(multiview_layout)
-
-        # within parent widget and layout
-        self.multiview = MultiView(parent=multiview_widget, viewer_mode=self.viewer_mode)
-        self.multiview.set_key_down_callback(self.set_next_row)
-        self.multiview.set_key_up_callback  (self.set_previous_row)
-        self.multiview.set_cache_memory_bar(self.image_cache_progress)
-        self.multiview.set_verbosity(self.verbosity)
-        multiview_layout.addWidget(self.multiview, 1)
-
-        self.multiview.set_message_callback( lambda m : self.statusBar().showMessage(m))
-
-        images_dict = {}
-        for im in self.image_list:
-            images_dict[im] = None
-        self.multiview.set_images(images_dict)
-        self.multiview.update_layout()
-        # self.multiview.show()
-        self.right_tabs_widget.addTab(multiview_widget,  self.params['config_name'])
-
-        # # --- create main tab
-        # main_tab = QtWidgets.QWidget()
-        # self.main_tab_widget = main_tab
-        # self.right_tabs_widget.addTab(main_tab, self.params['config_name'])
-        # main_tab.setLayout(vertical_layout)
+        # --- create '+' tab
+        self.add_plus_tab()
 
         # --- create help tab
         help_tab = QtWidgets.QWidget()
         self.right_tabs_widget.setMovable(True)
-        self.right_tabs_widget.addTab(help_tab, "Help")
+        index = self.right_tabs_widget.addTab(help_tab, "Help")
+        self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
         doc_layout = QtWidgets.QVBoxLayout()
         view = QtWidgets.QTextBrowser()
         # html has been generated from the webpage https://html-online.com/editor/
@@ -583,7 +624,8 @@ class ImCompWindow(QtWidgets.QMainWindow):
         if has_video_player:
             video_tab = QtWidgets.QWidget()
             self.right_tabs_widget.setMovable(True)
-            self.right_tabs_widget.addTab(video_tab, "Video")
+            index = self.right_tabs_widget.addTab(video_tab, "Video")
+            self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
             video_layout = QtWidgets.QHBoxLayout()
             self.videoplayer1 : VideoPlayer = VideoPlayer(self)
             video_layout.addWidget(self.videoplayer1, 1)
@@ -598,6 +640,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
         splitter.addWidget(self.right_tabs_widget)
         splitter.setCollapsible(0, False)
         splitter.setCollapsible(1, False)
+
+        # event
+        self.right_tabs_widget.tabBarClicked.connect(self.righttabs_clicked)
+        self.right_tabs_widget.tabCloseRequested.connect(self.close_tab)
 
         main_layout.addWidget(splitter)
         self.main_widget.setLayout(main_layout)
