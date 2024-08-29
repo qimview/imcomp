@@ -4,7 +4,7 @@ import json
 from imcomp import version, fill_table_data
 import glob
 
-from qimview.utils.qt_imports   import QtWidgets, QtCore
+from qimview.utils.qt_imports   import QtWidgets, QtCore, QtGui
 from qimview.image_viewers      import ViewerType
 from imcomp                     import ImCompWindow
 

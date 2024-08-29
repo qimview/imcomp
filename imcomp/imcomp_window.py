@@ -229,6 +229,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
         # Current MultiView
         self.multiview : MultiView | None = None
 
+        self._folder_select            : QtWidgets.QComboBox = QtWidgets.QComboBox()
+        self._file_filters_disables    : bool                = True
+        self._file_filters_disables_cb : QtWidgets.QCheckBox = QtWidgets.QCheckBox("Filter disables")
+
     def create_menu(self):
         self.option_menu = self.menuBar().addMenu(self.tr('File'))
         read_menu = self.option_menu.addAction(self.tr('Read file'))
@@ -426,11 +430,11 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.image2[diff_name] = image2
 
     def folder_select_changed(self, pos):
-        current_text = self.folder_select.currentText()
+        current_text = self._folder_select.currentText()
         if current_text.lower() == "root":
             current_index = QtCore.QModelIndex()
         else:
-            current_index = self.model.index(self.folder_select.currentText())
+            current_index = self.model.index(self._folder_select.currentText())
         self.filesystem_tree.setRootIndex(current_index)
 
     def set_next_row(self):
@@ -490,8 +494,8 @@ class ImCompWindow(QtWidgets.QMainWindow):
         return multiview_widget
 
     def add_multiview_tab(self, tab_name):
-        multiview_widget = self.new_multiview_widget()
-        index = self.right_tabs_widget.addTab(multiview_widget, tab_name)
+        self.multiview_widget = self.new_multiview_widget()
+        index = self.right_tabs_widget.addTab(self.multiview_widget, tab_name)
         self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
 
     def add_plus_tab(self):
@@ -547,13 +551,13 @@ class ImCompWindow(QtWidgets.QMainWindow):
                 sets_folders.append(dir)
 
         # --- root folder selection
-        self.folder_select = QtWidgets.QComboBox()
-        self.folder_select.setMaximumWidth(int(self.width()/3))
-        self.folder_select.addItems(sets_folders)
-        self.folder_select.addItems(std_paths)
-        self.folder_select.addItem("Root")
-        self.folder_select.currentIndexChanged.connect(self.folder_select_changed)
-        vertical_layout.addWidget(self.folder_select)
+        self._folder_select.setMaximumWidth(int(self.width()/3))
+        self._folder_select.addItems(sets_folders)
+        self._folder_select.addItems(std_paths)
+        self._folder_select.addItem("Root")
+        self._folder_select.currentIndexChanged.connect(self.folder_select_changed)
+        vertical_layout.addWidget(self._folder_select)
+        
 
         # --- filesystem tree view/model
         self.model = QtWidgets.QFileSystemModel()
@@ -580,7 +584,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.filesystem_tree.setUniformRowHeights(True)
 
         print(f" root index is {self.filesystem_tree.rootIndex()}")
-        self.filesystem_tree.setRootIndex(self.model.index(self.folder_select.currentText()))
+        self.filesystem_tree.setRootIndex(self.model.index(self._folder_select.currentText()))
 
         self.filesystem_tree.setAnimated(False)
         self.filesystem_tree.setIndentation(20)
@@ -622,16 +626,18 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
         # --- create video tab
         if has_video_player:
-            video_tab = QtWidgets.QWidget()
+            self.video_tab = QtWidgets.QWidget()
             self.right_tabs_widget.setMovable(True)
-            index = self.right_tabs_widget.addTab(video_tab, "Video")
+            index = self.right_tabs_widget.addTab(self.video_tab, "Video")
             self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
             video_layout = QtWidgets.QHBoxLayout()
-            self.videoplayer1 : VideoPlayer = VideoPlayer(self)
-            video_layout.addWidget(self.videoplayer1, 1)
-            self.videoplayer2 : VideoPlayer = VideoPlayer(self)
-            video_layout.addWidget(self.videoplayer2, 1)
-            video_tab.setLayout(video_layout)
+            self.nb_video_players = 3
+            self.video_player : list[VideoPlayer]= []
+            for n in range(self.nb_video_players):
+                self.video_player.append(VideoPlayer(self))
+                video_layout.addWidget(self.video_player[n], 1)
+                self.video_player[n].hide()
+            self.video_tab.setLayout(video_layout)
 
         # --- main layout
         main_layout = QtWidgets.QHBoxLayout()
@@ -665,44 +671,45 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.on_selection(file_list)
 
     def on_selection(self, file_list):
+        import gc
+        gc.collect()
         nb_selections = len(file_list)
         # TODO: improve this part
         def is_video(f):
             return f.lower().endswith("mp4") or f.lower().endswith(".360")
+        all_videos = all([ is_video(f) for f in file_list ])
 
-        if has_video_player and nb_selections == 1 and is_video(file_list[0]):
-            self.videoplayer1.set_video(file_list[0])
-            self.videoplayer1.set_synchronize(None)
-            self.videoplayer2.hide()
-            self.videoplayer1.set_name('player1')
-            self.videoplayer1.init_and_display()
+        if has_video_player and nb_selections>0 and all_videos:
+            self.right_tabs_widget.setCurrentWidget(self.video_tab)
+            # Limit number of selections to max number of video players
+            nb_selections = min(self.nb_video_players, nb_selections)
+            for n in range(nb_selections):
+                self.video_player[n].set_video(file_list[n])
+                self.video_player[n].set_name(f'player{n}')
+                self.video_player[n].init_and_display()
+                self.video_player[n].show()
+            self.video_player[0].empty_compare()
+            for n in range(1,nb_selections):
+                self.video_player[0].compare(self.video_player[n])
+            for n in range(nb_selections,self.nb_video_players):
+                self.video_player[n].hide()
         else:
-            if has_video_player and nb_selections ==2 and is_video(file_list[0]) and is_video(file_list[1]):
-                self.videoplayer1.set_synchronize(self.videoplayer2)
-                self.videoplayer2.set_synchronize(self.videoplayer1)
-                self.videoplayer1.set_video(file_list[0])
-                self.videoplayer2.set_video(file_list[1])
-                self.videoplayer2.show()
-                self.videoplayer1.set_name('player1')
-                self.videoplayer1.init_and_display()
+            # Change tab to images only if we are in videos tab
+            if self.right_tabs_widget.currentWidget() == self.video_tab:
+                self.right_tabs_widget.setCurrentWidget(self.multiview_widget)
+            def get_name(path, maxlength=15):
+                return os.path.splitext(os.path.basename(path))[0][-maxlength:]
 
-                self.videoplayer2.set_name('player2')
-                self.videoplayer2.init_and_display()
-                self.videoplayer1.compare(self.videoplayer2)
-            else:
-                def get_name(path, maxlength=15):
-                    return os.path.splitext(os.path.basename(path))[0][-maxlength:]
-
-                images_dict = {}
-                for idx, im in enumerate(file_list):
-                    image_key = f'{idx}...{get_name(im)}'
-                    images_dict[image_key] = im
-                print(f" images_dict {images_dict}")
-                self.multiview.set_images(images_dict)
-                self.multiview.set_number_of_viewers(len(images_dict))
-                self.multiview.set_viewer_images()
-                # self.multiview.viewer_grid_layout.update()
-                self.multiview.update_image()
+            images_dict = {}
+            for idx, im in enumerate(file_list):
+                image_key = f'{idx}...{get_name(im)}'
+                images_dict[image_key] = im
+            print(f" images_dict {images_dict}")
+            self.multiview.set_images(images_dict)
+            self.multiview.set_number_of_viewers(len(images_dict))
+            self.multiview.set_viewer_images()
+            # self.multiview.viewer_grid_layout.update()
+            self.multiview.update_image()
 
     def handleNewWindow(self):
         window = QtWidgets.QMainWindow(self)
