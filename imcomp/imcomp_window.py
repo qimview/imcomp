@@ -631,7 +631,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
             index = self.right_tabs_widget.addTab(self.video_tab, "Video")
             self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
             video_layout = QtWidgets.QHBoxLayout()
-            self.nb_video_players = 3
+            self.nb_video_players = 4
             self.video_player : list[VideoPlayer]= []
             for n in range(self.nb_video_players):
                 self.video_player.append(VideoPlayer(self))

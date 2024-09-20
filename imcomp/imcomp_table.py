@@ -2,6 +2,7 @@
 from qimview.utils.qt_imports import QtWidgets, QtCore, QtGui
 from qimview.utils.utils import get_time
 from imcomp import fill_table_data
+from .fill_table_data import readJson
 import numpy as np
 from collections import OrderedDict
 from imcomp.qimtools.process_image_differences import ProcessImageDifferences
@@ -187,7 +188,8 @@ class ImCompTable(QtWidgets.QTableWidget):
         except Exception as e:
             print(f"{e}")
 
-    def read_report(self, data, statusBar, setProgress):
+    def read_report(self, report, statusBar, setProgress):
+        data = readJson(report)
         # fill table with data
         nb_rows = self.rowCount()
         self.setUpdatesEnabled(False)
