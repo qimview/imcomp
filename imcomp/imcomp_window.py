@@ -686,11 +686,14 @@ class ImCompWindow(QtWidgets.QMainWindow):
             for n in range(nb_selections):
                 self.video_player[n].set_video(file_list[n])
                 self.video_player[n].set_name(f'player{n}')
-                self.video_player[n].init_and_display()
-                self.video_player[n].show()
+                if n!=0:
+                    self.video_player[n].init_and_display()
+                    self.video_player[n].show()
             self.video_player[0].empty_compare()
             for n in range(1,nb_selections):
                 self.video_player[0].compare(self.video_player[n])
+            self.video_player[0].init_and_display()
+            self.video_player[0].show()
             for n in range(nb_selections,self.nb_video_players):
                 self.video_player[n].hide()
         else:
