@@ -668,8 +668,8 @@ class ImCompWindow(QtWidgets.QMainWindow):
         file_list = []
         for index in selection_list:
             selected = index
-            indexItem = self.model.index(selected.row(), 0, selected.parent())  # print(indexItem)
-            filePath = self.model.filePath(indexItem)
+            indexItem = self.proxy_model.index(selected.row(), 0, selected.parent())  # print(indexItem)
+            filePath = self.model.filePath(self.proxy_model.mapToSource(indexItem))
             if filePath not in file_list:
                 file_list.append(filePath)
         print(f"file_list {file_list}")
