@@ -580,7 +580,12 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.model.setNameFilters(full_list)
         self.model.setIconProvider(EmptyIconProvider())
         self.filesystem_tree = QtWidgets.QTreeView()
-        self.filesystem_tree.setModel(self.model)
+
+        # To enable sorting
+        self.proxy_model =  QtCore.QSortFilterProxyModel(self)
+        self.proxy_model.setSourceModel(self.model)
+
+        self.filesystem_tree.setModel(self.proxy_model)
         self.filesystem_tree.setUniformRowHeights(True)
 
         print(f" root index is {self.filesystem_tree.rootIndex()}")
