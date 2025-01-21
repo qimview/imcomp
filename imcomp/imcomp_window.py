@@ -435,7 +435,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
             current_index = QtCore.QModelIndex()
         else:
             current_index = self.model.index(self._folder_select.currentText())
-        self.filesystem_tree.setRootIndex(current_index)
+        self.filesystem_tree.setRootIndex(self.proxy_model.mapFromSource(current_index))
 
     def set_next_row(self):
 
@@ -589,7 +589,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.filesystem_tree.setUniformRowHeights(True)
 
         print(f" root index is {self.filesystem_tree.rootIndex()}")
-        self.filesystem_tree.setRootIndex(self.model.index(self._folder_select.currentText()))
+        self.filesystem_tree.setRootIndex(self.proxy_model.mapFromSource(self.model.index(self._folder_select.currentText())))
 
         self.filesystem_tree.setAnimated(False)
         self.filesystem_tree.setIndentation(20)
