@@ -532,8 +532,8 @@ class ImCompWindow(QtWidgets.QMainWindow):
 
         # --- folder tab
         folder_tab_widget = QtWidgets.QWidget()
-        vertical_layout = QtWidgets.QVBoxLayout()
-        folder_tab_widget.setLayout(vertical_layout)
+        self._vertical_layout = QtWidgets.QVBoxLayout()
+        folder_tab_widget.setLayout(self._vertical_layout)
 
         # user paths
         user_path = os.path.expanduser('~')
@@ -556,8 +556,10 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self._folder_select.addItems(std_paths)
         self._folder_select.addItem("Root")
         self._folder_select.currentIndexChanged.connect(self.folder_select_changed)
-        vertical_layout.addWidget(self._folder_select)
-        
+        self._user_filters = QtWidgets.QLineEdit()
+        self._vertical_layout.addWidget(self._folder_select)
+        self._vertical_layout.addWidget(self._user_filters)
+        self._user_filters.textEdited.connect(self._set_user_filters)
 
         # --- filesystem tree view/model
         self.model = QtWidgets.QFileSystemModel()
@@ -599,7 +601,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.filesystem_tree.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         self.filesystem_tree.selectionModel().selectionChanged.connect( self.on_filesystem_selection_changed)
 
-        vertical_layout.addWidget(self.filesystem_tree)
+        self._vertical_layout.addWidget(self.filesystem_tree)
 
         self.left_tabs_widget.addTab(folder_tab_widget, 'File System')
 
@@ -635,14 +637,14 @@ class ImCompWindow(QtWidgets.QMainWindow):
             self.right_tabs_widget.setMovable(True)
             index = self.right_tabs_widget.addTab(self.video_tab, "Video")
             self.right_tabs_widget.tabBar().setTabButton(index, QtWidgets.QTabBar.RightSide, None)
-            video_layout = QtWidgets.QHBoxLayout()
+            self._video_layout = QtWidgets.QHBoxLayout()
             self.nb_video_players = 4
             self.video_player : list[VideoPlayer]= []
             for n in range(self.nb_video_players):
                 self.video_player.append(VideoPlayer(self))
-                video_layout.addWidget(self.video_player[n], 1)
+                self._video_layout.addWidget(self.video_player[n], 1)
                 self.video_player[n].hide()
-            self.video_tab.setLayout(video_layout)
+            self.video_tab.setLayout(self._video_layout)
 
         # --- main layout
         main_layout = QtWidgets.QHBoxLayout()
@@ -660,6 +662,24 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.main_widget.setLayout(main_layout)
         self.setCentralWidget(self.main_widget)
         self.print_log("update_layout done")
+
+    def _set_user_filters(self):
+        extension_list = gb_image_reader.extensions()
+        extension_list.extend(['*.MP4','*.360'])
+        full_list = []
+        for e in extension_list:
+            if e.lower() not in full_list:
+                full_list.append(f'*{e}')
+            if e.upper() not in full_list:
+                full_list.append(f'*{e}')
+
+        user_filters = self._user_filters.text()
+        if user_filters != "":
+            for f in user_filters.split(';'):
+                full_list.append(f)
+        self.model.setNameFilters(full_list)
+        self.proxy_model.setSourceModel(self.model)
+        self.filesystem_tree.setModel(self.proxy_model)
 
     def on_filesystem_selection_changed(self, selected, deselected):
         #print("selectedIndexes ", self.filesystem_tree.selectedIndexes())
