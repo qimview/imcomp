@@ -683,6 +683,7 @@ class ImCompWindow(QtWidgets.QMainWindow):
             self.right_tabs_widget.setCurrentWidget(self.video_tab)
             # Limit number of selections to max number of video players
             nb_selections = min(self.nb_video_players, nb_selections)
+            self.video_player[0].hide()
             for n in range(nb_selections):
                 self.video_player[n].set_video(file_list[n])
                 self.video_player[n].set_name(f'player{n}')
