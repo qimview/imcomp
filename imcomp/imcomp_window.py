@@ -230,8 +230,6 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self.multiview : MultiView | None = None
 
         self._folder_select            : QtWidgets.QComboBox = QtWidgets.QComboBox()
-        self._file_filters_disables    : bool                = True
-        self._file_filters_disables_cb : QtWidgets.QCheckBox = QtWidgets.QCheckBox("Filter disables")
 
     def create_menu(self):
         self.option_menu = self.menuBar().addMenu(self.tr('File'))
@@ -559,10 +557,21 @@ class ImCompWindow(QtWidgets.QMainWindow):
         self._user_filters = QtWidgets.QLineEdit()
         self._vertical_layout.addWidget(self._folder_select)
         self._vertical_layout.addWidget(self._user_filters)
+        self._checkboxes_layout = QtWidgets.QHBoxLayout()
+
+        self._file_filters_disables_cb : QtWidgets.QCheckBox = QtWidgets.QCheckBox("Filter disables")
+        self._checkboxes_layout.addWidget(self._file_filters_disables_cb)
+        self._file_filters_disables_cb.clicked.connect(self._set_user_filters)
+
+        self._file_filters_include_default : QtWidgets.QCheckBox = QtWidgets.QCheckBox("include default")
+        self._checkboxes_layout.addWidget(self._file_filters_include_default)
+        self._file_filters_include_default.clicked.connect(self._set_user_filters)
+
+        self._vertical_layout.addLayout(self._checkboxes_layout)
         self._user_filters.textEdited.connect(self._set_user_filters)
 
         # --- filesystem tree view/model
-        self.model = QtWidgets.QFileSystemModel()
+        self.model : QtWidgets.QFileSystemModel = QtWidgets.QFileSystemModel()
         # Set user home directory as root
         #print(f"set model root path to {user_path}")
         self.model.setRootPath(user_path)
@@ -667,19 +676,22 @@ class ImCompWindow(QtWidgets.QMainWindow):
         extension_list = gb_image_reader.extensions()
         extension_list.extend(['*.MP4','*.360'])
         full_list = []
-        for e in extension_list:
-            if e.lower() not in full_list:
-                full_list.append(f'*{e}')
-            if e.upper() not in full_list:
-                full_list.append(f'*{e}')
+        if self._file_filters_include_default.isChecked():
+            for e in extension_list:
+                if e.lower() not in full_list:
+                    full_list.append(f'*{e}')
+                if e.upper() not in full_list:
+                    full_list.append(f'*{e}')
 
         user_filters = self._user_filters.text()
         if user_filters != "":
             for f in user_filters.split(';'):
                 full_list.append(f)
         self.model.setNameFilters(full_list)
+        self.model.setNameFilterDisables(self._file_filters_disables_cb.isChecked())
         self.proxy_model.setSourceModel(self.model)
         self.filesystem_tree.setModel(self.proxy_model)
+        self.filesystem_tree.setRootIndex(self.proxy_model.mapFromSource(self.model.index(self._folder_select.currentText())))
 
     def on_filesystem_selection_changed(self, selected, deselected):
         #print("selectedIndexes ", self.filesystem_tree.selectedIndexes())
