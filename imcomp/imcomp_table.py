@@ -7,6 +7,7 @@ import numpy as np
 from collections import OrderedDict
 from imcomp.qimtools.process_image_differences import ProcessImageDifferences
 import os
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from qimview.image_viewers import MultiView
@@ -82,10 +83,10 @@ class ImCompTable(QtWidgets.QTableWidget):
         self.currentCellChanged.connect(self.current_cell_changed)
         self.itemSelectionChanged.connect(self.item_selection_changed)
 
-    def set_info(self, image_list, useful_data, multiview):
+    def set_info(self, image_list, useful_data, selection_cb: Callable):
         self.image_list   = image_list
         self.useful_data  = useful_data
-        self.multiview    : MultiView = multiview
+        self.selection_cb: Callable = selection_cb
 
     def print_log(self, mess):
         if self.verbosity & self.verbosity_LIGHT:
@@ -172,19 +173,7 @@ class ImCompTable(QtWidgets.QTableWidget):
                             image_dict[key_str] = self.useful_data[_row_id][im]
                     idx += 1
             print(f"image_dict {image_dict}")
-            self.multiview.set_images(image_dict)
-            nb_inputs = len(image_dict)
-            max_viewers = 100
-            print(f"self.image_list {self.image_list}")
-            row_size = len([ l for l in self.image_list if l != 'none'])
-            if nb_inputs>=1 and nb_inputs<=max_viewers:
-                if total_selected>1 or self.multiview.nb_viewers_used > nb_inputs:
-                    self.multiview.set_number_of_viewers(nb_inputs, max_columns=row_size)
-                self.multiview.set_viewer_images()
-                self.multiview.viewer_grid_layout.update()
-                # self.multiview.update_image()
-                # self.multiview.setFocus()
-            self.multiview.update_image()
+            self.selection_cb(image_dict)
         except Exception as e:
             print(f"{e}")
 
