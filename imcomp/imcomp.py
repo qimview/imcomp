@@ -182,11 +182,17 @@ def main():
 					info["CFBundleName"] = "IMCOMP"
 
 	QtCore.QCoreApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
+
+	# The Qt gtk3 platform theme aborts on recent GNOME where the xsettings
+	# schema no longer has the 'antialiasing' key; avoid it unless user chose one.
+	os.environ.setdefault('QT_QPA_PLATFORMTHEME', 'generic')
+
 	app = QtWidgets.QApplication(sys.argv)
 	try:
 		app.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
 	except Exception as e:
 		print("Attribute QtCore.Qt.AA_UseHighDpiPixmaps not available: {}".format(e))
+
 
 	_params['config_name'] = config['config_name']
 
